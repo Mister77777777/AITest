@@ -48,3 +48,12 @@ def test_each_case_has_unique_id_and_requirement_link():
     ids = [c.id for c in cases]
     assert len(set(ids)) == len(ids)
     assert all(c.requirement_id == "REQ-007" for c in cases)
+
+
+def test_float_field_produces_below_valid_above_partitions():
+    """TC-EP-03 by Detailed Test Design review:覆盖 float 分支。"""
+    req = _req_with_field(Field(name="rate", type="float", min=0.0, max=1.0))
+    cases = generate_equivalence_cases(req)
+    assert len(cases) == 3
+    labels = [c.tags[-1] for c in cases]
+    assert labels == ["below_min", "valid", "above_max"]
