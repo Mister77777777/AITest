@@ -33,3 +33,17 @@ def test_load_config_supports_legacy_anthropic_keys(tmp_path: Path):
 def test_load_config_missing_file_raises(tmp_path: Path):
     with pytest.raises(FileNotFoundError):
         load_config(tmp_path / "missing.json")
+
+
+def test_load_config_invalid_json_raises_value_error(tmp_path: Path):
+    cfg_file = tmp_path / "config.json"
+    cfg_file.write_text("not-json{")
+    with pytest.raises(ValueError, match="not valid JSON"):
+        load_config(cfg_file)
+
+
+def test_load_config_non_object_root_raises_value_error(tmp_path: Path):
+    cfg_file = tmp_path / "config.json"
+    cfg_file.write_text(json.dumps(["a", "list", "not", "an", "object"]))
+    with pytest.raises(ValueError, match="must contain a JSON object"):
+        load_config(cfg_file)

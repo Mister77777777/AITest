@@ -18,7 +18,12 @@ def load_config(path: Path | None = None) -> Config:
     path = Path(path) if path else DEFAULT_CONFIG_PATH
     if not path.exists():
         raise FileNotFoundError(f"Config file not found: {path}")
-    raw = json.loads(path.read_text())
+    try:
+        raw = json.loads(path.read_text())
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Config file is not valid JSON: {path} ({e.msg})") from e
+    if not isinstance(raw, dict):
+        raise ValueError(f"Config file must contain a JSON object, got {type(raw).__name__}: {path}")
     normalized = {
         "base_url": raw.get("base_url") or raw.get("ANTHROPIC_BASE_URL") or raw.get("OPENAI_BASE_URL", ""),
         "api_key": raw.get("api_key") or raw.get("ANTHROPIC_AUTH_TOKEN") or raw.get("OPENAI_API_KEY", ""),
