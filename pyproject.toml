@@ -3,6 +3,14 @@ name = "autotestdesign"
 version = "0.1.0"
 requires-python = ">=3.10"
 
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["autotestdesign*"]
+exclude = ["tests*", "out*", "resources*", "scripts*", "docs*"]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
