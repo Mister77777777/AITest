@@ -33,11 +33,39 @@ class LLMClient:
             from openai import OpenAI
             openai_client = OpenAI(base_url=config.base_url, api_key=config.api_key)
         self._client = openai_client
+        # 兼容性开关:部分 provider(如 Bedrock 上的 Claude Opus 4.7)不支持某些参数。
+        # 首次遭遇 BadRequest 后自动关闭对应开关,随后调用直接不发。
+        self._send_temperature = True
+        self._send_response_format = True
 
     def _render(self, prompt_name: str, variables: dict[str, Any]) -> str:
         path = self.prompt_dir / f"{prompt_name}.md"
         template = Template(path.read_text())
         return template.render(**variables)
+
+    def _invoke(self, prompt: str) -> str:
+        """实际调用 Chat Completions,按兼容性开关动态组装参数。"""
+        kwargs: dict[str, Any] = {
+            "model": self.config.model,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        if self._send_response_format:
+            kwargs["response_format"] = {"type": "json_object"}
+        if self._send_temperature:
+            kwargs["temperature"] = self.config.temperature
+        try:
+            resp = self._client.chat.completions.create(**kwargs)
+        except Exception as e:
+            # 识别「参数不被支持」这类 400 错误,关闭对应开关后由外层重试
+            msg = str(e).lower()
+            if "temperature" in msg and self._send_temperature:
+                self._send_temperature = False
+                raise
+            if "response_format" in msg and self._send_response_format:
+                self._send_response_format = False
+                raise
+            raise
+        return resp.choices[0].message.content
 
     def structured_call(
         self,
@@ -49,17 +77,26 @@ class LLMClient:
         prompt = self._render(prompt_name, variables)
         last_err: Exception | None = None
         for _ in range(self.config.max_retries):
-            resp = self._client.chat.completions.create(
-                model=self.config.model,
-                messages=[{"role": "user", "content": prompt}],
-                response_format={"type": "json_object"},
-                temperature=self.config.temperature,
-            )
-            content = resp.choices[0].message.content
             try:
+                content = self._invoke(prompt)
+                # 某些 provider 会返回带 markdown fence 的 JSON,做一次清洗
+                content = _strip_json_fence(content)
                 return schema.model_validate_json(content)
             except (ValidationError, Exception) as e:
-                # 对 schema 校验失败与网络/解析异常一视同仁,重试
+                # 对 schema 校验失败、参数兼容性错误、网络异常统一走重试
                 last_err = e
                 continue
         raise LLMOutputError(f"Failed to get valid response for '{prompt_name}': {last_err}")
+
+
+def _strip_json_fence(content: str) -> str:
+    """去掉 ```json ... ``` 之类的 markdown 围栏,保留内部 JSON。"""
+    s = content.strip()
+    if s.startswith("```"):
+        # 去首行围栏(可能带 json / JSON / 其他语言标记)
+        first_nl = s.find("\n")
+        if first_nl != -1:
+            s = s[first_nl + 1:]
+        if s.endswith("```"):
+            s = s[: -3]
+    return s.strip()

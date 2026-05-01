@@ -27,7 +27,7 @@ def load_config(path: Path | None = None) -> Config:
     normalized = {
         "base_url": raw.get("base_url") or raw.get("ANTHROPIC_BASE_URL") or raw.get("OPENAI_BASE_URL", ""),
         "api_key": raw.get("api_key") or raw.get("ANTHROPIC_AUTH_TOKEN") or raw.get("OPENAI_API_KEY", ""),
-        "model": raw.get("model", "gpt-4o-mini"),
+        "model": raw.get("model") or raw.get("MODEL") or raw.get("OPENAI_MODEL") or "gpt-4o-mini",
         "temperature": raw.get("temperature", 0.2),
         "max_retries": raw.get("max_retries", 3),
     }
