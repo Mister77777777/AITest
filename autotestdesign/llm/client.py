@@ -58,10 +58,8 @@ class LLMClient:
             content = resp.choices[0].message.content
             try:
                 return schema.model_validate_json(content)
-            except ValidationError as e:
-                last_err = e
-                continue
-            except Exception as e:
+            except (ValidationError, Exception) as e:
+                # 对 schema 校验失败与网络/解析异常一视同仁,重试
                 last_err = e
                 continue
         raise LLMOutputError(f"Failed to get valid response for '{prompt_name}': {last_err}")
