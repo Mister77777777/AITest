@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Any, Literal
-from pydantic import BaseModel, Field as PydField
+from pydantic import BaseModel, Field as PydField, model_validator
 
 
 class Field(BaseModel):
@@ -18,6 +18,14 @@ class RiskScore(BaseModel):
     priority: Literal["High", "Medium", "Low"]
     rationale: str
 
+    @model_validator(mode="after")
+    def _score_matches_product(self) -> "RiskScore":
+        # 强制 score = likelihood * impact,防止 LLM 返回自相矛盾的风险分
+        expected = self.likelihood * self.impact
+        if self.score != expected:
+            raise ValueError(f"score must equal likelihood * impact ({expected}), got {self.score}")
+        return self
+
 
 class Requirement(BaseModel):
     id: str
@@ -30,6 +38,7 @@ class Requirement(BaseModel):
 
 
 class TestCase(BaseModel):
+    # pytest 会尝试收集以 "Test" 开头的类,通过 pyproject.toml 过滤该警告
     id: str
     requirement_id: str
     technique: Literal["EP", "BVA", "DT", "STT"]
