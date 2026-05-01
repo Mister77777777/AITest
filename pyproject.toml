@@ -1,0 +1,15 @@
+[project]
+name = "autotestdesign"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["autotestdesign/core"]
+omit = ["autotestdesign/llm/*", "autotestdesign/ui/*", "autotestdesign/app.py"]
+
+[tool.ruff]
+line-length = 100
