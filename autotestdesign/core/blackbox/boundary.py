@@ -39,10 +39,10 @@ def generate_boundary_cases(req: Requirement) -> list[TestCase]:
                 requirement_id=req.id,
                 technique="BVA",
                 inputs={field.name: v},
-                steps=[f"Submit with {field.name}={v!r}"],
+                steps=[f"提交 {field.name}={v!r}"],
                 expected_result=(
-                    f"System rejects ({field.name} out of range)"
-                    if is_invalid else f"System accepts ({field.name} within range)"
+                    f"系统应拒绝该输入(字段 {field.name} 越界)"
+                    if is_invalid else f"系统应接受该输入(字段 {field.name} 在合法区间内)"
                 ),
                 priority=(req.risk.priority if req.risk else "Medium"),
                 tags=["BVA", field.name],

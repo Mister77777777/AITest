@@ -53,6 +53,6 @@ def test_one_condition_with_expected_actions_emits_both_branches():
     not_premium = [c for c in cases if not c.inputs["isPremium"]]
     assert "grant discount" in premium[0].expected_result
     assert (
-        "reject" in not_premium[0].expected_result.lower()
-        or "No action" in not_premium[0].expected_result
+        "拒绝" in not_premium[0].expected_result
+        or "不执行" in not_premium[0].expected_result
     )

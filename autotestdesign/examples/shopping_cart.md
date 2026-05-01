@@ -1,7 +1,7 @@
-REQ-001: A user can add items to the cart. The cart supports up to 50 distinct items.
+REQ-001:用户可以将商品加入购物车。购物车最多支持 50 件不同商品。
 
-REQ-002: When a user applies a discount code, the system validates it against active promotions. Codes must be 6-12 uppercase characters.
+REQ-002:当用户使用优惠码时,系统需校验该优惠码是否属于活动促销。优惠码必须是 6 至 12 位大写字符。
 
-REQ-003: At checkout, the user selects a payment method from: credit_card, paypal, bank_transfer, or gift_card. Order total must be between 0.01 and 50000.00.
+REQ-003:结账时用户需从以下支付方式中选择一种:信用卡(credit_card)、PayPal(paypal)、银行转账(bank_transfer)、礼品卡(gift_card)。订单总额需在 0.01 至 50000.00 之间。
 
-REQ-004: The system must support concurrent checkouts without double-charging.
+REQ-004:系统必须支持并发结账场景,避免发生重复扣款。

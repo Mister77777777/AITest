@@ -17,16 +17,16 @@ def generate_decision_table_cases(req: Requirement) -> list[TestCase]:
         # 取所有为 True 的条件名,用于生成期望结果描述
         true_conditions = [k for k, v in inputs.items() if v]
         expected = (
-            "Execute actions: " + ", ".join(req.expected_actions)
+            "系统应执行以下动作:" + "、".join(req.expected_actions)
             if true_conditions and req.expected_actions
-            else "No action / reject"
+            else "系统不执行动作或应拒绝"
         )
         cases.append(TestCase(
             id=f"{req.id}-DT-{i:03d}",
             requirement_id=req.id,
             technique="DT",
             inputs=inputs,
-            steps=[f"Given conditions {inputs}"],
+            steps=[f"给定条件组合 {inputs}"],
             expected_result=expected,
             # 若需求携带风险评分则使用其优先级,否则默认 Medium
             priority=(req.risk.priority if req.risk else "Medium"),

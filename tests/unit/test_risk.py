@@ -41,4 +41,5 @@ def test_attach_risk_falls_back_on_llm_failure():
     req = _req("login with password")
     out = attach_risk(req, _BoomLLM())
     assert out.risk is not None
-    assert "rule-based" in out.risk.rationale.lower()
+    # 降级兜底信息应为中文
+    assert "规则基线" in out.risk.rationale or "LLM 不可用" in out.risk.rationale

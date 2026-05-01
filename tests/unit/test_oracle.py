@@ -18,7 +18,7 @@ def _tc(age: int) -> TestCase:
 def test_out_of_range_uses_algorithmic_fallback_without_llm():
     req = _req()
     out = synthesize_oracle(req, _tc(17), llm=None)
-    assert "reject" in out.expected_result.lower()
+    assert "拒绝" in out.expected_result
 
 
 def test_in_range_calls_llm_when_available():
@@ -36,4 +36,5 @@ def test_llm_failure_falls_back_to_default():
             raise RuntimeError("x")
     out = synthesize_oracle(req, _tc(30), llm=_Boom())
     assert out.expected_result  # 非空
-    assert "accept" in out.expected_result.lower() or "reject" in out.expected_result.lower()
+    # 算法兜底时应当用中文陈述"接受"或"拒绝"
+    assert "接受" in out.expected_result or "拒绝" in out.expected_result or "执行" in out.expected_result

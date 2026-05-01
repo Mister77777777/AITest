@@ -20,11 +20,11 @@ def _is_out_of_range(req: Requirement, tc: TestCase) -> tuple[bool, str]:
             continue
         v = tc.inputs[field.name]
         if field.type in ("int", "float") and field.min is not None and v < field.min:
-            return True, f"{field.name} below minimum ({field.min})"
+            return True, f"{field.name} 低于下限({field.min})"
         if field.type in ("int", "float") and field.max is not None and v > field.max:
-            return True, f"{field.name} above maximum ({field.max})"
+            return True, f"{field.name} 高于上限({field.max})"
         if field.type == "enum" and field.allowed and v not in field.allowed:
-            return True, f"{field.name} not in allowed set"
+            return True, f"{field.name} 不在允许的取值集合中"
     return False, ""
 
 
@@ -34,13 +34,13 @@ def synthesize_oracle(req: Requirement, tc: TestCase, llm: _LLMLike | None) -> T
     if out_of_range:
         # 输入越界 — 无需 LLM,直接断言系统拒绝
         return tc.model_copy(update={
-            "expected_result": f"System rejects input: {reason}."
+            "expected_result": f"系统应拒绝该输入:{reason}。"
         })
     if llm is None:
         # 无 LLM 且输入合法 — 使用 expected_actions 构造默认 oracle
         default = (
-            f"System performs: {', '.join(req.expected_actions)}."
-            if req.expected_actions else "System accepts input."
+            f"系统应执行:{'、'.join(req.expected_actions)}。"
+            if req.expected_actions else "系统应接受该输入。"
         )
         return tc.model_copy(update={"expected_result": default})
     try:
@@ -58,7 +58,7 @@ def synthesize_oracle(req: Requirement, tc: TestCase, llm: _LLMLike | None) -> T
     except Exception:
         # LLM 调用失败 — 回退到基于 expected_actions 的默认 oracle
         default = (
-            f"System performs: {', '.join(req.expected_actions)}."
-            if req.expected_actions else "System accepts input."
+            f"系统应执行:{'、'.join(req.expected_actions)}。"
+            if req.expected_actions else "系统应接受该输入。"
         )
         return tc.model_copy(update={"expected_result": default})

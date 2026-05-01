@@ -16,4 +16,5 @@ def test_load_example_banking_returns_requirements():
 def test_load_example_shopping_returns_requirements():
     reqs = load_example("shopping_cart")
     assert len(reqs) == 4
-    assert "cart" in reqs[0].raw_text.lower()
+    # 中文示例:断言包含关键业务术语
+    assert "购物车" in reqs[0].raw_text

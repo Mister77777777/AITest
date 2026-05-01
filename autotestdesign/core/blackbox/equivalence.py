@@ -51,10 +51,10 @@ def generate_equivalence_cases(req: Requirement) -> list[TestCase]:
                 requirement_id=req.id,
                 technique="EP",
                 inputs={field.name: value},
-                steps=[f"Submit with {field.name}={value!r}"],
+                steps=[f"提交 {field.name}={value!r}"],
                 expected_result=(
-                    f"System rejects input ({label})" if is_invalid
-                    else f"System accepts input ({label})"
+                    f"系统应拒绝该输入(分区:{label})" if is_invalid
+                    else f"系统应接受该输入(分区:{label})"
                 ),
                 priority=(req.risk.priority if req.risk else "Medium"),
                 tags=["EP", field.name, label],

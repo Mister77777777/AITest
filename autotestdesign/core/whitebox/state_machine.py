@@ -81,7 +81,7 @@ def generate_all_states_cases(sm: StateMachine, requirement_id: str) -> list[Tes
             first_event = next(iter(data.values()))["event"]
             edges.append((a, first_event, b))
         steps = _path_steps(edges)
-        steps.insert(0, f"Start in state {sm.start_state}")
+        steps.insert(0, f"初始状态:{sm.start_state}")
         steps.append(f"-> {target}")
         reached.update(node_path)
         cases.append(TestCase(
@@ -90,7 +90,7 @@ def generate_all_states_cases(sm: StateMachine, requirement_id: str) -> list[Tes
             technique="STT",
             inputs={"target_state": target},
             steps=steps,
-            expected_result=f"System reaches state {target}",
+            expected_result=f"系统应到达状态 {target}",
             priority="High",
             tags=["STT", "all_states"],
         ))
@@ -114,14 +114,14 @@ def generate_all_transitions_cases(sm: StateMachine, requirement_id: str) -> lis
             first_event = next(iter(data.values()))["event"]
             edges.append((a, first_event, b))
         edges.append((t.source, t.event, t.target))
-        steps = [f"Start in state {sm.start_state}"] + _path_steps(edges)
+        steps = [f"初始状态:{sm.start_state}"] + _path_steps(edges)
         cases.append(TestCase(
             id=f"{requirement_id}-STT-AT-{counter:03d}",
             requirement_id=requirement_id,
             technique="STT",
             inputs={"transition": f"{t.source} --{t.event}--> {t.target}"},
             steps=steps,
-            expected_result=f"System moves from {t.source} to {t.target} on event '{t.event}'",
+            expected_result=f"系统应在事件 '{t.event}' 触发下从 {t.source} 转移到 {t.target}",
             priority="High",
             tags=["STT", "all_transitions", t.event],
         ))

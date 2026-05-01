@@ -1,7 +1,7 @@
 id,raw_text,category
-REQ-001,"User age must be between 18 and 120 for registration.",functional
-REQ-002,"Password must be 8-32 characters with at least one digit and one letter.",functional
-REQ-003,"User must provide a valid email address.",functional
-REQ-004,"System must lock the account after 5 consecutive failed login attempts.",functional
-REQ-005,"All user data must be encrypted in transit and at rest.",non-functional
-REQ-006,"Account creation must complete within 3 seconds.",non-functional
+REQ-001,"用户注册时,年龄必须在 18 至 120 岁之间。",functional
+REQ-002,"登录密码长度需在 8 至 32 个字符之间,且至少包含 1 位数字与 1 位字母。",functional
+REQ-003,"用户必须提供一个合法的电子邮箱地址。",functional
+REQ-004,"连续 5 次登录失败后,系统应锁定该账户。",functional
+REQ-005,"所有用户数据在传输过程和存储中都必须加密。",non-functional
+REQ-006,"账户创建流程需在 3 秒内完成。",non-functional
