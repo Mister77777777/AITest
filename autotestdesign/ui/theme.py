@@ -74,28 +74,29 @@ header[data-testid="stHeader"],
 }
 
 [data-testid="stMainBlockContainer"] {
-  max-width: 1080px !important;
+  max-width: 1600px !important;
+  width: 94vw !important;
   margin: 0 auto !important;
-  padding-top: 4rem !important;
-  padding-bottom: 6rem !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-top: 3rem !important;
+  padding-bottom: 5rem !important;
+  padding-left: 2.5rem !important;
+  padding-right: 2.5rem !important;
 }
 
 /* Hero 区:大字标题 + 柔和副标题 */
 .atd-hero {
   text-align: center;
-  margin-bottom: 3rem;
-  padding: 1rem 0 2rem 0;
+  margin-bottom: 2.5rem;
+  padding: 0.5rem 0 1.5rem 0;
 }
 
 .atd-hero h1 {
   font-family: var(--font-sf) !important;
   font-weight: 700 !important;
-  font-size: 4.25rem !important;
+  font-size: 3.75rem !important;
   letter-spacing: -0.035em !important;
   line-height: 1.05 !important;
-  margin: 0 0 1rem 0 !important;
+  margin: 0 0 0.75rem 0 !important;
   color: var(--ink) !important;
   background: linear-gradient(180deg, #1D1D1F 0%, #424245 100%);
   -webkit-background-clip: text;
@@ -104,12 +105,12 @@ header[data-testid="stHeader"],
 }
 
 .atd-hero .sub {
-  font-size: 1.35rem !important;
+  font-size: 1.2rem !important;
   font-weight: 400 !important;
   color: var(--ink-3) !important;
   letter-spacing: -0.01em;
   line-height: 1.4;
-  max-width: 680px;
+  max-width: 780px;
   margin: 0 auto;
 }
 
@@ -451,18 +452,46 @@ div[role="radiogroup"] > label:has(input:checked) {
   font-size: 0.92rem !important;
 }
 
-/* File uploader */
+/* File uploader — 更大的 padding + 各元素垂直间隔,避免字号重合 */
 [data-testid="stFileUploader"] section {
   background: rgba(120, 120, 128, 0.05) !important;
   border: 1.5px dashed rgba(120, 120, 128, 0.3) !important;
   border-radius: var(--radius-md) !important;
-  padding: 2rem !important;
+  padding: 2.25rem 1.75rem !important;
   transition: all 0.2s ease;
+  min-height: 170px;
 }
 
 [data-testid="stFileUploader"] section:hover {
   border-color: var(--blue) !important;
   background: rgba(0, 113, 227, 0.03) !important;
+}
+
+/* 上传组件内部:主提示、副提示、按钮 三个层次拉开 */
+[data-testid="stFileUploader"] section > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.6rem !important;
+  text-align: center !important;
+}
+
+[data-testid="stFileUploader"] section small,
+[data-testid="stFileUploader"] section [data-testid="stFileUploaderDropzoneInstructions"] span {
+  display: block !important;
+  font-size: 0.82rem !important;
+  color: var(--ink-3) !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+[data-testid="stFileUploader"] section [data-testid="stFileUploaderDropzoneInstructions"] {
+  line-height: 1.6 !important;
+}
+
+[data-testid="stFileUploader"] button {
+  margin-top: 0.75rem !important;
 }
 
 /* Expander — 白色卡片 */
@@ -565,12 +594,119 @@ main > div {
 
 /* 段落式模块副标 */
 .atd-section {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 500;
   color: var(--blue);
   text-transform: none;
-  letter-spacing: -0.005em;
+  letter-spacing: 0.01em;
   margin-bottom: 0.4rem;
+}
+
+/* 风险指标卡(大) */
+.atd-metric {
+  display: flex;
+  align-items: stretch;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hair);
+  overflow: hidden;
+  height: 92px;
+  box-shadow: var(--shadow-sm);
+}
+
+.atd-metric-bar {
+  width: 5px;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+
+.atd-metric-body {
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.atd-metric-label {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.atd-metric-value {
+  font-size: 1.9rem;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* 覆盖率紧凑指标卡 */
+.atd-minicard {
+  background: var(--card);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.atd-minicard-label {
+  font-size: 0.76rem;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.atd-minicard-value {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+/* 导出下载卡(FR6) */
+.atd-dlcard {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFC 100%);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px 20px 24px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.atd-dlcard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.atd-dlcard-icon {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--blue);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.atd-dlcard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.atd-dlcard-desc {
+  font-size: 0.9rem;
+  color: var(--ink-3);
+  line-height: 1.45;
+  margin-bottom: 4px;
 }
 </style>
 """

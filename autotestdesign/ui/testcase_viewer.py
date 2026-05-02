@@ -20,49 +20,111 @@ def _build_llm_or_none():
 
 
 def render_test_design_tab() -> None:
-    """FR3/FR4/FR5/FR7 面板:配置、运行流水线、按技术分 Tab 展示用例。"""
+    """FR3/FR4/FR5/FR7 面板:顶部配置栏 + 左状态机/右结果 两栏填满页面。"""
     session = get_session()
-    st.subheader("FR3/FR4/FR5/FR7 · 测试设计")
+    st.markdown(
+        '<div class="atd-section">FR3 · FR4 · FR5 · FR7 · 测试设计</div>'
+        '<h2>流水线配置与结果</h2>',
+        unsafe_allow_html=True,
+    )
 
     if not session.requirements:
         st.info("请先在「需求录入」页载入或输入需求。")
         return
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        use_llm = st.toggle("使用 LLM 生成风险理由与 Oracle", value=True)
-        max_cases = st.number_input("优化:最大用例数(0 = 不限)", min_value=0, value=0)
-    with col2:
-        include_stt = st.checkbox("包含状态转换(FR4)", value=True)
+    # 顶部配置栏:四个等宽控件
+    c1, c2, c3, c4 = st.columns([1, 1, 1, 1], gap="medium")
+    with c1:
+        use_llm = st.toggle("启用 LLM", value=True, help="用 LLM 生成风险理由与 Oracle")
+    with c2:
+        include_stt = st.checkbox("状态转换 (FR4)", value=True)
+    with c3:
+        max_cases = st.number_input("最大用例数", min_value=0, value=0, help="0 = 不限")
+    with c4:
+        stt_req_id = st.selectbox(
+            "状态机挂载 ID",
+            options=[r.id for r in session.requirements],
+            disabled=not include_stt,
+        )
 
-    # 状态机 DSL 编辑与图渲染(可选)
-    sm = None
-    stt_req_id = None
+    st.write("")
+
+    # 左状态机 / 右运行按钮与进度区
     if include_stt:
-        sm = render_state_diagram_section()
-        stt_req_id = st.text_input("将状态机挂到需求 ID", value=session.requirements[0].id)
+        col_sm, col_go = st.columns([3, 2], gap="large")
+        with col_sm:
+            sm = render_state_diagram_section()
+        with col_go:
+            st.markdown('<div class="atd-section">流水线</div>', unsafe_allow_html=True)
+            st.markdown(
+                """
+                <div style="color:#6E6E73; font-size:0.95rem; line-height:1.6;">
+                  将执行:LLM 自动结构化 → 风险打分 → 等价类 / 边界值 / 判定表 →
+                  状态转换 → Oracle 合成 → 加权覆盖优化。
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.write("")
+            run = st.button("运行完整流水线", type="primary", use_container_width=True)
+    else:
+        sm = None
+        st.markdown(
+            """
+            <div style="color:#6E6E73; font-size:0.95rem; line-height:1.6;">
+              将执行:LLM 自动结构化 → 风险打分 → 等价类 / 边界值 / 判定表 →
+              Oracle 合成 → 加权覆盖优化。
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.write("")
+        run = st.button("运行完整流水线", type="primary", use_container_width=True)
 
-    if st.button("▶ 运行完整流水线", type="primary"):
+    if run:
         llm = _build_llm_or_none() if use_llm else None
         with st.spinner("正在运行流水线..."):
             suite = run_pipeline(
                 session.requirements,
                 llm=llm,
                 state_machine=sm,
-                state_machine_requirement_id=stt_req_id,
+                state_machine_requirement_id=stt_req_id if include_stt else None,
                 optimize_max_cases=max_cases or None,
             )
         session.suite = suite
-        # 触发页面重绘:重新赋值以更新会话状态
         session.requirements = [r for r in session.requirements]
-        st.success(f"已生成 {len(suite.cases)} 条测试用例。")
+        st.success(f"已生成 {len(suite.cases)} 条测试用例")
 
     if not session.suite:
         return
 
-    st.markdown("---")
-    # 按生成技术分 Tab 展示用例
-    techniques = sorted({c.technique for c in session.suite.cases})
+    # 结果区:顶部覆盖率指标卡 + 下方按技术分 Tab 的大表
+    st.write("")
+    st.markdown('<div class="atd-section">生成结果</div>', unsafe_allow_html=True)
+
+    # 覆盖率卡片 + 各技术用例数
+    by_tech: dict[str, int] = {}
+    for c in session.suite.cases:
+        by_tech[c.technique] = by_tech.get(c.technique, 0) + 1
+
+    cov_cols = st.columns(5, gap="small")
+    with cov_cols[0]:
+        req_cov = session.suite.coverage.get("requirement_coverage", 0.0)
+        _mini_metric("需求覆盖", f"{req_cov * 100:.0f}%", "#0071E3")
+    for i, (tech, label, color) in enumerate(
+        [
+            ("EP", "等价类", "#34C759"),
+            ("BVA", "边界值", "#FF9500"),
+            ("DT", "判定表", "#AF52DE"),
+            ("STT", "状态转换", "#FF2D55"),
+        ]
+    ):
+        with cov_cols[i + 1]:
+            _mini_metric(label, str(by_tech.get(tech, 0)), color)
+
+    st.write("")
+
+    techniques = sorted(by_tech.keys())
     tech_tabs = st.tabs(techniques)
     for tab, tech in zip(tech_tabs, techniques):
         with tab:
@@ -73,9 +135,19 @@ def render_test_design_tab() -> None:
                 "优先级": c.priority,
                 "输入": str(c.inputs),
                 "预期结果": c.expected_result,
-                "标签": ",".join(c.tags),
+                "标签": ", ".join(c.tags),
             } for c in rows])
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(df, use_container_width=True, height=460, hide_index=True)
 
-    # 展示覆盖率汇总
-    st.markdown("**覆盖率:**" + ", ".join(f"{k}={v:.2f}" for k, v in session.suite.coverage.items()))
+
+def _mini_metric(label: str, value: str, color: str) -> None:
+    """紧凑指标卡(覆盖率栏用)。"""
+    st.markdown(
+        f"""
+        <div class="atd-minicard">
+          <div class="atd-minicard-label">{label}</div>
+          <div class="atd-minicard-value" style="color:{color}">{value}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
