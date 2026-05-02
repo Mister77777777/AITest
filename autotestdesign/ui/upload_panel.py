@@ -5,12 +5,14 @@ import streamlit as st
 import pandas as pd
 from autotestdesign.core.parsing import parse_csv, parse_text_block
 from autotestdesign.examples.loader import list_examples, load_example
-from autotestdesign.ui.state import get_session
+from autotestdesign.ui.state import get_session, render_workset_chip
 
 
 def render_upload_tab() -> None:
     """FR1 需求录入面板:左栏录入控件,右栏当前需求表,充分占满横向空间。"""
     session = get_session()
+    # 顶部持久状态条 — 切换到其他 tab 依然能看到
+    render_workset_chip()
 
     # 左 2 : 右 3,左控件区紧凑,右侧展示占大头
     col_ctrl, col_view = st.columns([2, 3], gap="large")
@@ -35,7 +37,10 @@ def render_upload_tab() -> None:
             choice = st.selectbox("示例集", list_examples(), label_visibility="collapsed")
             if st.button("载入示例", type="primary", use_container_width=True):
                 session.requirements = load_example(choice)
+                session.source_label = f"内置示例 · {choice}"
+                session.suite = None  # 新数据源,清空旧套件避免串场
                 st.success(f"已从 {choice} 载入 {len(session.requirements)} 条需求")
+                st.rerun()
 
         elif mode == "上传文件":
             up = st.file_uploader(
@@ -52,7 +57,10 @@ def render_upload_tab() -> None:
                     session.requirements = parse_csv(tmp_path)
                 else:
                     session.requirements = parse_text_block(tmp_path.read_text())
+                session.source_label = f"上传 · {up.name}"
+                session.suite = None
                 st.success(f"已解析 {len(session.requirements)} 条需求")
+                st.rerun()
 
         else:
             text = st.text_area(
@@ -63,7 +71,10 @@ def render_upload_tab() -> None:
             )
             if st.button("解析文本", type="primary", use_container_width=True):
                 session.requirements = parse_text_block(text)
+                session.source_label = "手动输入"
+                session.suite = None
                 st.success(f"已解析 {len(session.requirements)} 条需求")
+                st.rerun()
 
     with col_view:
         st.markdown(

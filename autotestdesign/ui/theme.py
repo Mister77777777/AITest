@@ -195,11 +195,11 @@ code, pre, kbd {
 
 [data-baseweb="tab-list"] {
   background: rgba(120, 120, 128, 0.08) !important;
-  padding: 5px !important;
-  border-radius: 14px !important;
+  padding: 6px !important;
+  border-radius: 18px !important;
   gap: 0 !important;
   width: fit-content !important;
-  margin: 0 auto 2.5rem auto !important;
+  margin: 0 auto 2rem auto !important;
   border: none !important;
   display: inline-flex !important;
   position: relative;
@@ -214,18 +214,18 @@ code, pre, kbd {
 
 [data-baseweb="tab"] {
   font-family: var(--font-sf) !important;
-  font-size: 0.97rem !important;
+  font-size: 1.08rem !important;
   font-weight: 500 !important;
   letter-spacing: -0.005em !important;
   color: var(--ink-2) !important;
   background: transparent !important;
   border: none !important;
-  padding: 8px 20px !important;
-  border-radius: 10px !important;
+  padding: 12px 32px !important;
+  border-radius: 13px !important;
   margin: 0 !important;
-  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
-  min-height: 36px !important;
-  height: 36px !important;
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s, border-color 0.2s !important;
+  min-height: 48px !important;
+  height: 48px !important;
 }
 
 [data-baseweb="tab"]:hover {
@@ -251,12 +251,6 @@ code, pre, kbd {
   border-radius: var(--radius-lg);
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   box-shadow: var(--shadow-md);
-  animation: atd-card-in 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-@keyframes atd-card-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* 主按钮:系统蓝圆角胶囊 */
@@ -273,7 +267,7 @@ code, pre, kbd {
   padding: 11px 24px !important;
   height: auto !important;
   box-shadow: var(--shadow-sm) !important;
-  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s, border-color 0.2s !important;
 }
 
 [data-testid="stBaseButton-primary"]:hover {
@@ -298,7 +292,7 @@ code, pre, kbd {
   font-size: 0.95rem !important;
   padding: 10px 20px !important;
   box-shadow: none !important;
-  transition: all 0.2s ease !important;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
 }
 
 [data-testid="stBaseButton-secondary"]:hover {
@@ -319,7 +313,7 @@ code, pre, kbd {
   padding: 10px 20px !important;
   justify-content: center !important;
   text-align: center !important;
-  transition: all 0.2s ease !important;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
 }
 
 [data-testid="stDownloadButton"] button:hover {
@@ -338,7 +332,7 @@ div[data-testid="stTextArea"] textarea {
   font-size: 1rem !important;
   color: var(--ink) !important;
   padding: 10px 14px !important;
-  transition: all 0.15s ease !important;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
   box-shadow: none !important;
 }
 
@@ -381,7 +375,7 @@ div[role="radiogroup"] > label {
   color: var(--ink-2) !important;
   margin: 0 !important;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 div[role="radiogroup"] > label:has(input:checked) {
@@ -458,7 +452,7 @@ div[role="radiogroup"] > label:has(input:checked) {
   border: 1.5px dashed rgba(120, 120, 128, 0.3) !important;
   border-radius: var(--radius-md) !important;
   padding: 2.25rem 1.75rem !important;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   min-height: 170px;
 }
 
@@ -533,15 +527,8 @@ hr {
   font-size: 0.9rem !important;
 }
 
-/* 整体淡入 */
-main > div {
-  animation: atd-fade 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-@keyframes atd-fade {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* 整体淡入(只用 Streamlit 首次挂载时的 Hero 区) — 已删除 main > div 级别的
+   全局动画,避免流水线运行期间流式重渲染触发连续缩放感。 */
 
 /* Toggle 小开关 */
 [data-testid="stToggle"] label > div:first-child > div {
@@ -677,7 +664,7 @@ main > div {
   padding: 28px 24px 20px 24px;
   margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .atd-dlcard:hover {
@@ -707,6 +694,105 @@ main > div {
   color: var(--ink-3);
   line-height: 1.45;
   margin-bottom: 4px;
+}
+
+/* 跨 Tab 持久展示的「当前工作集」条 */
+.atd-workset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(0,113,227,0.05) 0%, rgba(0,113,227,0.02) 100%);
+  border: 1px solid rgba(0,113,227,0.12);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-sf);
+  font-size: 0.95rem;
+}
+
+.atd-workset.empty {
+  background: rgba(120,120,128,0.06);
+  border-color: rgba(120,120,128,0.15);
+}
+
+.atd-workset-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.atd-workset-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(52,199,89,0.45);
+  flex-shrink: 0;
+}
+
+.atd-workset-dot.empty {
+  background: var(--ink-3);
+  box-shadow: none;
+}
+
+.atd-workset-label {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+.atd-workset-count {
+  color: var(--ink);
+  font-weight: 600;
+  padding: 3px 10px;
+  background: rgba(0,113,227,0.12);
+  color: var(--blue-deep);
+  border-radius: 100px;
+  font-size: 0.85rem;
+}
+
+.atd-workset-pill {
+  padding: 3px 10px;
+  background: rgba(52,199,89,0.14);
+  color: #1A7F37;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.atd-workset-pill.dim {
+  background: rgba(120,120,128,0.12);
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.atd-workset-meta {
+  color: var(--ink-3);
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+}
+
+/* 运行按钮 CTA 卡:把按钮+状态合并成高亮独立卡片 */
+.atd-runcard {
+  background: linear-gradient(135deg, #F0F7FF 0%, #FFFFFF 100%);
+  border: 1px solid rgba(0,113,227,0.18);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin: 1rem 0 1.25rem 0;
+  box-shadow: 0 2px 12px rgba(0,113,227,0.06);
+}
+
+.atd-runcard-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.atd-runcard-sub {
+  font-size: 0.92rem;
+  color: var(--ink-3);
+  line-height: 1.5;
+  margin-bottom: 14px;
 }
 </style>
 """

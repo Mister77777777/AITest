@@ -3,12 +3,13 @@ import tempfile
 from pathlib import Path
 import streamlit as st
 from autotestdesign.core.export import to_json, to_csv, to_xlsx
-from autotestdesign.ui.state import get_session
+from autotestdesign.ui.state import get_session, render_workset_chip
 
 
 def render_export_tab() -> None:
     """FR6 导出面板:3 列下载 + 右侧预览,充满横向。"""
     session = get_session()
+    render_workset_chip()
     st.markdown(
         '<div class="atd-section">FR6 · 导出</div>'
         '<h2>下载与预览</h2>',

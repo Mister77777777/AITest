@@ -1,12 +1,13 @@
 from __future__ import annotations
 import pandas as pd
 import streamlit as st
-from autotestdesign.ui.state import get_session
+from autotestdesign.ui.state import get_session, render_workset_chip
 
 
 def render_risk_tab() -> None:
     """FR2 风险分析面板:顶部四个指标卡 + 主表 + 右侧优先级分布。"""
     session = get_session()
+    render_workset_chip()
     st.markdown(
         '<div class="atd-section">FR2 · 风险分析与优先级</div>'
         '<h2>风险画像</h2>',

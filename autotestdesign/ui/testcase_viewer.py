@@ -1,10 +1,11 @@
 from __future__ import annotations
+import time
 import pandas as pd
 import streamlit as st
 from autotestdesign.config import load_config
 from autotestdesign.llm.client import LLMClient
 from autotestdesign.core.pipeline import run_pipeline
-from autotestdesign.ui.state import get_session
+from autotestdesign.ui.state import get_session, render_workset_chip
 from autotestdesign.ui.state_diagram import render_state_diagram_section
 
 
@@ -20,8 +21,9 @@ def _build_llm_or_none():
 
 
 def render_test_design_tab() -> None:
-    """FR3/FR4/FR5/FR7 面板:顶部配置栏 + 左状态机/右结果 两栏填满页面。"""
+    """FR3/FR4/FR5/FR7 面板:顶部配置、独立 run-card 集中反馈、结果区。"""
     session = get_session()
+    render_workset_chip()
     st.markdown(
         '<div class="atd-section">FR3 · FR4 · FR5 · FR7 · 测试设计</div>'
         '<h2>流水线配置与结果</h2>',
@@ -47,62 +49,75 @@ def render_test_design_tab() -> None:
             disabled=not include_stt,
         )
 
-    st.write("")
-
-    # 左状态机 / 右运行按钮与进度区
+    sm = None
     if include_stt:
-        col_sm, col_go = st.columns([3, 2], gap="large")
-        with col_sm:
-            sm = render_state_diagram_section()
-        with col_go:
-            st.markdown('<div class="atd-section">流水线</div>', unsafe_allow_html=True)
-            st.markdown(
-                """
-                <div style="color:#6E6E73; font-size:0.95rem; line-height:1.6;">
-                  将执行:LLM 自动结构化 → 风险打分 → 等价类 / 边界值 / 判定表 →
-                  状态转换 → Oracle 合成 → 加权覆盖优化。
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            st.write("")
-            run = st.button("运行完整流水线", type="primary", use_container_width=True)
-    else:
-        sm = None
-        st.markdown(
-            """
-            <div style="color:#6E6E73; font-size:0.95rem; line-height:1.6;">
-              将执行:LLM 自动结构化 → 风险打分 → 等价类 / 边界值 / 判定表 →
-              Oracle 合成 → 加权覆盖优化。
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
         st.write("")
-        run = st.button("运行完整流水线", type="primary", use_container_width=True)
+        st.markdown('<div class="atd-section">状态机 DSL</div>', unsafe_allow_html=True)
+        sm = render_state_diagram_section()
+
+    # ---------- 运行入口卡片:按钮 + 状态一体化 ----------
+    st.markdown(
+        f"""
+        <div class="atd-runcard">
+          <div class="atd-runcard-title">▶ 运行完整流水线</div>
+          <div class="atd-runcard-sub">
+            将依序执行:LLM 自动结构化 → 风险打分 → 等价类 / 边界值 / 判定表
+            {'→ 状态转换覆盖' if include_stt else ''} → Oracle 合成 → 加权覆盖优化。
+            共 {len(session.requirements)} 条需求,{'LLM 已启用' if use_llm else 'LLM 已关闭(规则兜底)'}。
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # 按钮贴在 run-card 下方,宽度占满,视线不会错过
+    run = st.button(
+        "开始运行",
+        type="primary",
+        use_container_width=True,
+        key="run_pipeline_btn",
+    )
+
+    # 把实时状态区预留在按钮正下方(st.status 会在此位置展开)
+    status_placeholder = st.empty()
 
     if run:
-        llm = _build_llm_or_none() if use_llm else None
-        with st.spinner("正在运行流水线..."):
-            suite = run_pipeline(
-                session.requirements,
-                llm=llm,
-                state_machine=sm,
-                state_machine_requirement_id=stt_req_id if include_stt else None,
-                optimize_max_cases=max_cases or None,
-            )
-        session.suite = suite
-        session.requirements = [r for r in session.requirements]
-        st.success(f"已生成 {len(suite.cases)} 条测试用例")
+        with status_placeholder.status("正在运行流水线…", expanded=True) as status:
+            llm = _build_llm_or_none() if use_llm else None
+            t0 = time.time()
+            st.write("① 初始化 LLM 客户端" if llm else "① LLM 已关闭,走规则兜底")
+            st.write(f"② 对 {len(session.requirements)} 条需求进行结构化与风险打分")
+            st.write("③ 生成等价类 / 边界值 / 判定表用例")
+            if include_stt and sm:
+                st.write(f"④ 状态转换覆盖(挂载 {stt_req_id})")
+            st.write("⑤ 合成 Oracle 并按风险优先级优化")
+
+            try:
+                suite = run_pipeline(
+                    session.requirements,
+                    llm=llm,
+                    state_machine=sm,
+                    state_machine_requirement_id=stt_req_id if include_stt else None,
+                    optimize_max_cases=max_cases or None,
+                )
+                session.suite = suite
+                elapsed = time.time() - t0
+                status.update(
+                    label=f"完成 · 生成 {len(suite.cases)} 条用例 · 耗时 {elapsed:.1f}s",
+                    state="complete",
+                    expanded=False,
+                )
+            except Exception as e:
+                status.update(label=f"运行失败:{e}", state="error", expanded=True)
+                return
 
     if not session.suite:
         return
 
-    # 结果区:顶部覆盖率指标卡 + 下方按技术分 Tab 的大表
+    # ---------- 结果区 ----------
     st.write("")
     st.markdown('<div class="atd-section">生成结果</div>', unsafe_allow_html=True)
 
-    # 覆盖率卡片 + 各技术用例数
     by_tech: dict[str, int] = {}
     for c in session.suite.cases:
         by_tech[c.technique] = by_tech.get(c.technique, 0) + 1
