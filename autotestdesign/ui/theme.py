@@ -1,143 +1,230 @@
-"""编辑类极简主题:注入 Google Fonts + 结构化 CSS。
+"""苹果生态风格主题:SF Pro / PingFang SC、云白底、系统蓝、圆角卡片、无分隔线。
 
-设计方向:Swiss editorial × architectural 审美。
-- 字体:Fraunces(可变衬线,标题)+ IBM Plex Sans(正文)+ IBM Plex Mono(数据/代码)
-- 色板:象牙纸面 + 墨黑 + 单一锈红强调色(避免紫色渐变等俗套)
-- 细节:左侧 2px 色条代替填充色块、硬朗方形按钮、细分隔线、适度微动效
+设计原则:
+- 无侧栏、无横线、无页脚小字
+- Hero 大字标题 + 柔和副标题,集中视觉
+- 内容区用白色圆角卡片,20px radius + 柔和多层阴影
+- Tabs 作为 segmented control:药丸式胶囊背景 + 白色活动态
+- 16-18px 基础字号,提升可读性
+- 两种深浅状态:主文 #1D1D1F,次文 #6E6E73;仅在强调态用系统蓝
 """
 from __future__ import annotations
 import streamlit as st
 
 
 _CSS = """
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
 :root {
-  --paper:      #F7F5F0;
-  --paper-pure: #FEFDFA;
-  --ink:        #1A1A1A;
-  --ink-soft:   #5C5852;
-  --ink-faint:  #8E8880;
-  --rule:       #D5D0C5;
-  --accent:     #B5482E;
-  --accent-soft:#F0DCD0;
-  --amber:      #C69214;
-  --font-serif: 'Fraunces', 'Noto Serif SC', 'Songti SC', Georgia, serif;
-  --font-sans:  'IBM Plex Sans', 'Noto Sans SC', -apple-system, sans-serif;
-  --font-mono:  'IBM Plex Mono', 'SF Mono', 'Menlo', monospace;
+  --bg:          #F5F5F7;
+  --card:        #FFFFFF;
+  --ink:         #1D1D1F;
+  --ink-2:       #424245;
+  --ink-3:       #6E6E73;
+  --hair:        #E8E8ED;
+  --blue:        #0071E3;
+  --blue-hover:  #0077ED;
+  --blue-deep:   #0060C0;
+  --green:       #34C759;
+  --orange:      #FF9500;
+  --red:         #FF3B30;
+  --font-sf:     -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                 "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+                 sans-serif;
+  --font-mono:   "SF Mono", ui-monospace, "Menlo", "JetBrains Mono", monospace;
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
+  --shadow-md:   0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+  --shadow-lg:   0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.08);
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
 }
 
 html, body, .stApp,
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"] {
-  background: var(--paper) !important;
+  background: var(--bg) !important;
   color: var(--ink) !important;
-  font-family: var(--font-sans) !important;
-  font-weight: 300;
-  letter-spacing: 0.005em;
+  font-family: var(--font-sf) !important;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.003em;
 }
 
-#MainMenu, [data-testid="stStatusWidget"], footer, header[data-testid="stHeader"] {
+/* 彻底隐藏侧栏、顶栏菜单、状态条、页脚 */
+#MainMenu,
+[data-testid="stStatusWidget"],
+[data-testid="stToolbar"],
+footer,
+header[data-testid="stHeader"],
+[data-testid="stSidebar"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarHeader"] {
   display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+}
+
+/* 主容器居中,两边均匀留白 */
+[data-testid="stAppViewContainer"] > section {
+  padding-left: 0 !important;
 }
 
 [data-testid="stMainBlockContainer"] {
-  padding-top: 3rem !important;
-  max-width: 1180px;
+  max-width: 1080px !important;
+  margin: 0 auto !important;
+  padding-top: 4rem !important;
+  padding-bottom: 6rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
 }
 
-h1 {
-  font-family: var(--font-serif) !important;
-  font-weight: 400 !important;
-  font-variation-settings: "opsz" 144, "SOFT" 30;
-  letter-spacing: -0.03em !important;
-  font-size: 3.25rem !important;
+/* Hero 区:大字标题 + 柔和副标题 */
+.atd-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 1rem 0 2rem 0;
+}
+
+.atd-hero h1 {
+  font-family: var(--font-sf) !important;
+  font-weight: 700 !important;
+  font-size: 4.25rem !important;
+  letter-spacing: -0.035em !important;
   line-height: 1.05 !important;
-  margin-bottom: 0.25rem !important;
+  margin: 0 0 1rem 0 !important;
+  color: var(--ink) !important;
+  background: linear-gradient(180deg, #1D1D1F 0%, #424245 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.atd-hero .sub {
+  font-size: 1.35rem !important;
+  font-weight: 400 !important;
+  color: var(--ink-3) !important;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.atd-hero .badge {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 6px 14px;
+  background: rgba(0, 113, 227, 0.08);
+  color: var(--blue);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 100px;
+  letter-spacing: 0;
+}
+
+.atd-hero .badge .dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 6px;
+  transform: translateY(-1px);
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+}
+
+.atd-hero .badge.offline .dot {
+  background: var(--orange);
+  box-shadow: 0 0 8px rgba(255, 149, 0, 0.5);
+}
+
+/* 强制隐藏 Streamlit 自动生成的锚点链接 icon */
+h1 a, h2 a, h3 a, h4 a {
+  display: none !important;
+}
+
+/* 全局 headings 复位,避免被 Streamlit 默认样式覆盖 */
+h1, h2, h3, h4, p, div, span, label {
   color: var(--ink) !important;
 }
 
 h2 {
-  font-family: var(--font-serif) !important;
-  font-weight: 500 !important;
-  font-variation-settings: "opsz" 36;
-  letter-spacing: -0.015em !important;
-  font-size: 1.75rem !important;
-  margin-top: 1.5rem !important;
-  color: var(--ink) !important;
+  font-family: var(--font-sf) !important;
+  font-weight: 600 !important;
+  font-size: 1.9rem !important;
+  letter-spacing: -0.02em !important;
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
 }
 
 h3 {
-  font-family: var(--font-mono) !important;
-  font-weight: 500 !important;
-  font-size: 0.78rem !important;
-  letter-spacing: 0.2em !important;
-  text-transform: uppercase !important;
-  color: var(--accent) !important;
-  margin-top: 1.75rem !important;
-  margin-bottom: 1rem !important;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sf) !important;
+  font-weight: 600 !important;
+  font-size: 1.15rem !important;
+  letter-spacing: -0.01em !important;
+  color: var(--ink) !important;
+  text-transform: none !important;
+  border: none !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.75rem !important;
+  padding-bottom: 0 !important;
 }
 
+/* 段落与标签 */
 p, li, label, span, div {
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-sf) !important;
 }
 
-code, kbd, pre, tt {
+p {
+  line-height: 1.55;
+}
+
+code, pre, kbd {
   font-family: var(--font-mono) !important;
-  font-size: 0.88rem !important;
+  font-size: 0.92em !important;
 }
 
-.atd-kicker {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 500;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.atd-sub {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  color: var(--ink-soft);
-  margin-top: 0.5rem;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--rule);
-}
-
-.atd-sub span.sep {
-  color: var(--rule);
-  margin: 0 0.75rem;
+/* Tabs:药丸式 segmented control */
+[data-testid="stTabs"] {
+  margin-top: 0;
 }
 
 [data-baseweb="tab-list"] {
+  background: rgba(120, 120, 128, 0.08) !important;
+  padding: 5px !important;
+  border-radius: 14px !important;
   gap: 0 !important;
-  border-bottom: 1px solid var(--rule) !important;
-  padding-left: 0 !important;
-  margin-bottom: 2rem !important;
+  width: fit-content !important;
+  margin: 0 auto 2.5rem auto !important;
+  border: none !important;
+  display: inline-flex !important;
+  position: relative;
+  justify-content: center;
+}
+
+/* 让 tab-list 的父容器居中 */
+[data-testid="stTabs"] > div:first-child {
+  display: flex !important;
+  justify-content: center !important;
 }
 
 [data-baseweb="tab"] {
-  font-family: var(--font-sans) !important;
-  font-size: 0.95rem !important;
-  font-weight: 400 !important;
-  letter-spacing: 0.02em !important;
-  color: var(--ink-soft) !important;
-  padding: 0.75rem 1.75rem 1rem 0 !important;
-  margin-right: 1.5rem !important;
+  font-family: var(--font-sf) !important;
+  font-size: 0.97rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--ink-2) !important;
   background: transparent !important;
   border: none !important;
-  border-bottom: 2px solid transparent !important;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  padding: 8px 20px !important;
+  border-radius: 10px !important;
+  margin: 0 !important;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  min-height: 36px !important;
+  height: 36px !important;
 }
 
 [data-baseweb="tab"]:hover {
@@ -145,279 +232,345 @@ code, kbd, pre, tt {
 }
 
 [data-baseweb="tab"][aria-selected="true"] {
-  color: var(--accent) !important;
-  border-bottom-color: var(--accent) !important;
-  font-weight: 500 !important;
+  background: var(--card) !important;
+  color: var(--ink) !important;
+  box-shadow: var(--shadow-sm), 0 0 0 0.5px rgba(0,0,0,0.04) !important;
+  font-weight: 600 !important;
 }
 
+/* 隐藏 Streamlit 默认的 tab 下划线动画条 */
 [data-baseweb="tab-highlight"],
 [data-baseweb="tab-border"] {
-  background: transparent !important;
-  height: 0 !important;
+  display: none !important;
 }
 
+/* Tab 内容区:白色圆角卡片 */
+[data-testid="stTabs"] > div:last-child > div {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  box-shadow: var(--shadow-md);
+  animation: atd-card-in 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@keyframes atd-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 主按钮:系统蓝圆角胶囊 */
 [data-testid="stBaseButton-primary"] {
-  background: var(--ink) !important;
-  color: var(--paper-pure) !important;
-  border: 1px solid var(--ink) !important;
-  border-radius: 0 !important;
-  font-family: var(--font-mono) !important;
+  background: var(--blue) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 980px !important;
+  font-family: var(--font-sf) !important;
   font-weight: 500 !important;
-  font-size: 0.82rem !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  padding: 0.75rem 1.5rem !important;
-  transition: all 0.25s ease !important;
-  box-shadow: none !important;
+  font-size: 0.98rem !important;
+  letter-spacing: -0.005em !important;
+  text-transform: none !important;
+  padding: 11px 24px !important;
+  height: auto !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
 }
 
 [data-testid="stBaseButton-primary"]:hover {
-  background: var(--accent) !important;
-  border-color: var(--accent) !important;
+  background: var(--blue-hover) !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25) !important;
 }
 
+[data-testid="stBaseButton-primary"]:active {
+  transform: translateY(0);
+  background: var(--blue-deep) !important;
+}
+
+/* 次级按钮:灰底胶囊 */
 [data-testid="stBaseButton-secondary"] {
-  background: transparent !important;
+  background: rgba(120, 120, 128, 0.12) !important;
   color: var(--ink) !important;
-  border: 1px solid var(--ink) !important;
-  border-radius: 0 !important;
-  font-family: var(--font-mono) !important;
-  font-weight: 400 !important;
-  font-size: 0.82rem !important;
-  letter-spacing: 0.1em !important;
-  padding: 0.6rem 1.25rem !important;
+  border: none !important;
+  border-radius: 980px !important;
+  font-family: var(--font-sf) !important;
+  font-weight: 500 !important;
+  font-size: 0.95rem !important;
+  padding: 10px 20px !important;
   box-shadow: none !important;
   transition: all 0.2s ease !important;
 }
 
 [data-testid="stBaseButton-secondary"]:hover {
-  background: var(--ink) !important;
-  color: var(--paper-pure) !important;
+  background: rgba(120, 120, 128, 0.18) !important;
 }
 
+/* 下载按钮:边框胶囊 */
 [data-testid="stDownloadButton"] button {
-  background: transparent !important;
-  color: var(--ink) !important;
-  border: 1px solid var(--rule) !important;
-  border-radius: 0 !important;
-  font-family: var(--font-mono) !important;
-  letter-spacing: 0.08em !important;
+  background: var(--card) !important;
+  color: var(--blue) !important;
+  border: 1.5px solid rgba(0, 113, 227, 0.25) !important;
+  border-radius: 980px !important;
+  font-family: var(--font-sf) !important;
+  font-weight: 500 !important;
+  font-size: 0.95rem !important;
   text-transform: none !important;
-  padding: 0.7rem 1.25rem !important;
-  text-align: left !important;
-  justify-content: flex-start !important;
+  letter-spacing: -0.005em !important;
+  padding: 10px 20px !important;
+  justify-content: center !important;
+  text-align: center !important;
+  transition: all 0.2s ease !important;
 }
 
 [data-testid="stDownloadButton"] button:hover {
-  border-color: var(--ink) !important;
-  background: var(--paper-pure) !important;
+  background: rgba(0, 113, 227, 0.06) !important;
+  border-color: var(--blue) !important;
 }
 
-[data-testid="stSidebar"] {
-  background: var(--paper-pure) !important;
-  border-right: 1px solid var(--rule) !important;
-}
-
-[data-testid="stSidebar"] > div {
-  padding-top: 3rem !important;
-}
-
-[data-testid="stSidebar"] h2 {
-  font-family: var(--font-serif) !important;
-  font-size: 1.1rem !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.01em !important;
-  margin-bottom: 1.25rem !important;
-}
-
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
-  font-family: var(--font-mono) !important;
-  font-size: 0.78rem !important;
-  color: var(--ink-soft) !important;
-  letter-spacing: 0.02em;
-  line-height: 1.7 !important;
-}
-
-[data-testid="stAlert"],
-[data-testid="stInfo"],
-[data-testid="stSuccess"],
-[data-testid="stWarning"],
-[data-testid="stError"] {
-  background: transparent !important;
-  border-radius: 0 !important;
-  padding: 0.75rem 0 0.75rem 1rem !important;
-  font-family: var(--font-sans) !important;
-  box-shadow: none !important;
-}
-
-[data-testid="stInfo"] {
-  border-left: 2px solid var(--ink-soft) !important;
-  color: var(--ink-soft) !important;
-}
-
-[data-testid="stSuccess"] {
-  border-left: 2px solid var(--accent) !important;
-}
-
-[data-testid="stWarning"] {
-  border-left: 2px solid var(--amber) !important;
-}
-
-[data-testid="stError"] {
-  border-left: 2px solid #8B2B1E !important;
-}
-
-[data-testid="stDataFrame"] {
-  border: 1px solid var(--rule) !important;
-  border-radius: 0 !important;
-  font-family: var(--font-mono) !important;
-}
-
-[data-testid="stDataFrame"] * {
-  font-family: var(--font-mono) !important;
-  font-size: 0.82rem !important;
-}
-
-[data-testid="stDataFrame"] [role="columnheader"] {
-  background: var(--paper) !important;
-  font-weight: 500 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
-  font-size: 0.7rem !important;
-  color: var(--ink) !important;
-  border-bottom: 1px solid var(--ink) !important;
-}
-
+/* 表单输入:圆角、柔和边框 */
 div[data-testid="stTextInput"] input,
 div[data-testid="stNumberInput"] input,
-div[data-testid="stTextArea"] textarea,
-div[data-baseweb="select"] > div {
-  border-radius: 0 !important;
-  border: 1px solid var(--rule) !important;
-  background: var(--paper-pure) !important;
-  font-family: var(--font-mono) !important;
-  font-size: 0.88rem !important;
+div[data-testid="stTextArea"] textarea {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--hair) !important;
+  background: var(--card) !important;
+  font-family: var(--font-sf) !important;
+  font-size: 1rem !important;
   color: var(--ink) !important;
-  transition: border-color 0.2s ease;
+  padding: 10px 14px !important;
+  transition: all 0.15s ease !important;
+  box-shadow: none !important;
 }
 
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stNumberInput"] input:focus,
 div[data-testid="stTextArea"] textarea:focus {
-  border-color: var(--ink) !important;
-  box-shadow: none !important;
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15) !important;
+  outline: none !important;
+}
+
+/* Selectbox */
+div[data-baseweb="select"] > div {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--hair) !important;
+  background: var(--card) !important;
+  font-family: var(--font-sf) !important;
+  font-size: 1rem !important;
+  min-height: 44px !important;
+  padding: 2px 8px !important;
+}
+
+/* Radio — segmented style */
+div[role="radiogroup"] {
+  background: rgba(120, 120, 128, 0.08);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 0 !important;
+  display: inline-flex !important;
 }
 
 div[role="radiogroup"] > label {
   background: transparent !important;
-  border: 1px solid var(--rule) !important;
-  border-radius: 0 !important;
-  padding: 0.5rem 1rem !important;
-  font-family: var(--font-mono) !important;
-  font-size: 0.82rem !important;
-  letter-spacing: 0.04em !important;
-  color: var(--ink-soft) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-family: var(--font-sf) !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  color: var(--ink-2) !important;
+  margin: 0 !important;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
 div[role="radiogroup"] > label:has(input:checked) {
-  border-color: var(--ink) !important;
-  background: var(--ink) !important;
-  color: var(--paper-pure) !important;
+  background: var(--card) !important;
+  color: var(--ink) !important;
+  box-shadow: var(--shadow-sm), 0 0 0 0.5px rgba(0,0,0,0.04) !important;
 }
 
+/* 提示框:柔和填色 + 圆角,无左边框 */
+[data-testid="stAlert"],
+[data-testid="stInfo"],
+[data-testid="stSuccess"],
+[data-testid="stWarning"],
+[data-testid="stError"] {
+  border-radius: var(--radius-md) !important;
+  padding: 14px 18px !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 0.97rem !important;
+}
+
+[data-testid="stInfo"] {
+  background: rgba(0, 113, 227, 0.06) !important;
+  color: var(--blue-deep) !important;
+}
+
+[data-testid="stSuccess"] {
+  background: rgba(52, 199, 89, 0.10) !important;
+  color: #1A7F37 !important;
+}
+
+[data-testid="stWarning"] {
+  background: rgba(255, 149, 0, 0.12) !important;
+  color: #AD5A00 !important;
+}
+
+[data-testid="stError"] {
+  background: rgba(255, 59, 48, 0.10) !important;
+  color: #B00020 !important;
+}
+
+[data-testid="stInfo"] *,
+[data-testid="stSuccess"] *,
+[data-testid="stWarning"] *,
+[data-testid="stError"] * {
+  color: inherit !important;
+}
+
+/* DataFrame:圆角卡片、删除 Streamlit 默认顶格边框 */
+[data-testid="stDataFrame"] {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--hair) !important;
+  overflow: hidden !important;
+}
+
+[data-testid="stDataFrame"] [role="columnheader"] {
+  background: #FAFAFC !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  color: var(--ink-2) !important;
+  text-transform: none !important;
+  letter-spacing: -0.005em !important;
+  border-bottom: 1px solid var(--hair) !important;
+}
+
+[data-testid="stDataFrame"] * {
+  font-family: var(--font-sf) !important;
+  font-size: 0.92rem !important;
+}
+
+/* File uploader */
 [data-testid="stFileUploader"] section {
-  background: var(--paper-pure) !important;
-  border: 1px dashed var(--ink-faint) !important;
-  border-radius: 0 !important;
-  padding: 1.5rem !important;
+  background: rgba(120, 120, 128, 0.05) !important;
+  border: 1.5px dashed rgba(120, 120, 128, 0.3) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 2rem !important;
+  transition: all 0.2s ease;
 }
 
 [data-testid="stFileUploader"] section:hover {
-  border-color: var(--ink) !important;
+  border-color: var(--blue) !important;
+  background: rgba(0, 113, 227, 0.03) !important;
 }
 
-[data-testid="stToggle"] label > div > div {
-  background: var(--rule) !important;
-}
-
-[data-testid="stCheckbox"] label > div:first-child,
-[data-testid="stToggle"] label > div:first-child {
-  border-radius: 2px !important;
-}
-
+/* Expander — 白色卡片 */
 [data-testid="stExpander"] {
-  border: 1px solid var(--rule) !important;
-  border-radius: 0 !important;
-  background: var(--paper-pure) !important;
+  border: 1px solid var(--hair) !important;
+  border-radius: var(--radius-md) !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  margin-bottom: 0.5rem !important;
 }
 
 [data-testid="stExpander"] summary {
-  font-family: var(--font-mono) !important;
-  font-size: 0.85rem !important;
-  letter-spacing: 0.04em !important;
-  padding: 0.75rem 1rem !important;
-}
-
-hr {
-  border: none !important;
-  border-top: 1px solid var(--rule) !important;
-  margin: 2rem 0 !important;
-}
-
-[data-testid="stSpinner"] > div > div {
-  border-color: var(--ink-faint) !important;
-  border-top-color: var(--accent) !important;
-}
-
-[data-testid="stSubheader"] {
-  font-family: var(--font-mono) !important;
-  font-size: 0.72rem !important;
-  letter-spacing: 0.2em !important;
-  text-transform: uppercase !important;
-  color: var(--accent) !important;
+  font-family: var(--font-sf) !important;
   font-weight: 500 !important;
-  margin-bottom: 0.75rem !important;
-  margin-top: 1.5rem !important;
+  font-size: 0.97rem !important;
+  padding: 12px 18px !important;
+  color: var(--ink) !important;
 }
 
+/* 彻底隐藏 <hr> */
+hr {
+  display: none !important;
+}
+
+/* Spinner */
+[data-testid="stSpinner"] > div > div {
+  border-color: var(--hair) !important;
+  border-top-color: var(--blue) !important;
+}
+
+/* 子标题容器:保持自然排版,不加装饰线 */
+[data-testid="stHeadingWithActionElements"] {
+  margin-bottom: 1rem !important;
+}
+
+/* Caption:次要灰 */
+[data-testid="stCaptionContainer"] {
+  color: var(--ink-3) !important;
+  font-size: 0.9rem !important;
+}
+
+/* 整体淡入 */
 main > div {
-  animation: atd-fade 0.5s ease-out;
+  animation: atd-fade 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 @keyframes atd-fade {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-[data-testid="stTabs"] > div:last-child > div {
-  animation: atd-tab-fade 0.35s ease-out;
+/* Toggle 小开关 */
+[data-testid="stToggle"] label > div:first-child > div {
+  background: var(--hair) !important;
+  border-radius: 100px !important;
 }
 
-@keyframes atd-tab-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-[data-testid="stBarChart"] {
-  background: var(--paper-pure);
-  padding: 1rem;
-  border: 1px solid var(--rule);
-}
-
-.atd-footer {
-  margin-top: 4rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+/* 顶栏状态:一个浮动的小圆角条,右上角 */
+.atd-topbar {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: 999;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 0.5px solid rgba(0,0,0,0.06);
+  padding: 7px 14px;
+  border-radius: 100px;
+  font-family: var(--font-sf);
+  font-size: 0.82rem;
+  color: var(--ink-2);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.atd-topbar .model {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.atd-topbar .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.4);
+}
+
+.atd-topbar.offline .dot {
+  background: var(--orange);
+  box-shadow: 0 0 8px rgba(255, 149, 0, 0.4);
+}
+
+.atd-topbar .sep {
+  color: var(--hair);
+}
+
+/* 段落式模块副标 */
+.atd-section {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--blue);
+  text-transform: none;
+  letter-spacing: -0.005em;
+  margin-bottom: 0.4rem;
 }
 </style>
 """
@@ -428,32 +581,34 @@ def inject_theme() -> None:
     st.markdown(_CSS, unsafe_allow_html=True)
 
 
-def render_masthead() -> None:
-    """渲染编辑风格刊头:kicker + 大字标题 + 细线分隔的副标题。"""
+def render_hero(api_ok: bool) -> None:
+    """Apple 风格 Hero:大字标题 + 柔和副标题 + 状态 badge。"""
+    badge_cls = "" if api_ok else "offline"
+    badge_label = "就绪 · LLM 已连接" if api_ok else "离线 · 规则兜底模式"
     st.markdown(
-        """
-        <span class="atd-kicker">AutoTestDesign · 0.1</span>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.markdown("# AI 驱动的测试用例生成器")
-    st.markdown(
-        """
-        <div class="atd-sub">
-          FR1 — FR7<span class="sep">·</span>ISO/IEC/IEEE 29119-4<span class="sep">·</span>ISTQB Foundation
+        f"""
+        <div class="atd-hero">
+          <h1>AutoTestDesign</h1>
+          <div class="sub">AI 驱动的测试用例生成器 · 从需求到黑盒/白盒测试套件</div>
+          <div class="badge {badge_cls}"><span class="dot"></span>{badge_label}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
 
-def render_footer(model: str = "", endpoint: str = "") -> None:
-    """编辑风格页脚:左边版本号,右边 LLM 接入点。"""
+def render_topbar(model: str, online: bool) -> None:
+    """右上浮动的毛玻璃状态条:显示 LLM 模型名与在线状态。"""
+    cls = "" if online else "offline"
+    display = model if model else "—"
+    state = "Live" if online else "Offline"
     st.markdown(
         f"""
-        <div class="atd-footer">
-          <span>Assignment 2 · Final Project</span>
-          <span>{model} {'· ' + endpoint if endpoint else ''}</span>
+        <div class="atd-topbar {cls}">
+          <span class="dot"></span>
+          <span>{state}</span>
+          <span class="sep">·</span>
+          <span class="model">{display}</span>
         </div>
         """,
         unsafe_allow_html=True,
