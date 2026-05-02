@@ -74,20 +74,20 @@ header[data-testid="stHeader"],
 }
 
 [data-testid="stMainBlockContainer"] {
-  max-width: 1600px !important;
-  width: 94vw !important;
-  margin: 0 auto !important;
-  padding-top: 3rem !important;
-  padding-bottom: 5rem !important;
-  padding-left: 2.5rem !important;
-  padding-right: 2.5rem !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-top: 2.5rem !important;
+  padding-bottom: 4rem !important;
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
 }
 
-/* Hero 区:大字标题 + 柔和副标题 */
+/* Hero 区内部限宽以保持标题可读性,但容器本身占满 */
 .atd-hero {
   text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 0.5rem 0 1.5rem 0;
+  margin-bottom: 2rem;
+  padding: 0.25rem 0 1rem 0;
 }
 
 .atd-hero h1 {
