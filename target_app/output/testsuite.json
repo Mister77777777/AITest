@@ -1,0 +1,1564 @@
+{
+  "cases": [
+    {
+      "id": "REQ-006-STT-AS-001",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "target_state": "Locked"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --fifthFailedAttempt--> Locked",
+        "-> Locked"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_states"
+      ]
+    },
+    {
+      "id": "REQ-001-BVA-001",
+      "requirement_id": "REQ-001",
+      "technique": "BVA",
+      "inputs": {
+        "age": 17
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=17"
+      ],
+      "expected_result": "系统应拒绝该输入:age 低于下限(18)。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "age"
+      ]
+    },
+    {
+      "id": "REQ-002-BVA-001",
+      "requirement_id": "REQ-002",
+      "technique": "BVA",
+      "inputs": {
+        "password": "xxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "password"
+      ]
+    },
+    {
+      "id": "REQ-003-DT-001",
+      "requirement_id": "REQ-003",
+      "technique": "DT",
+      "inputs": {
+        "邮箱包含 @": false,
+        "邮箱包含 .": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'邮箱包含 @': False, '邮箱包含 .': False}"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "DT"
+      ]
+    },
+    {
+      "id": "REQ-004-BVA-001",
+      "requirement_id": "REQ-004",
+      "technique": "BVA",
+      "inputs": {
+        "username": "xx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "username"
+      ]
+    },
+    {
+      "id": "REQ-005-BVA-001",
+      "requirement_id": "REQ-005",
+      "technique": "BVA",
+      "inputs": {
+        "failed_attempts": -1
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=-1"
+      ],
+      "expected_result": "系统应拒绝该输入:failed_attempts 低于下限(0)。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "failed_attempts"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AS-002",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "target_state": "LoggedIn"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --login--> LoggedIn",
+        "-> LoggedIn"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_states"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-001",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "Guest --register--> Registered"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "register"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-002",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "Registered --login--> LoggedIn"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --login--> LoggedIn"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "login"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-003",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "LoggedIn --logout--> Registered"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --login--> LoggedIn",
+        "LoggedIn --logout--> Registered"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "logout"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-004",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "Registered --failedAttempt--> Registered"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --failedAttempt--> Registered"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "failedAttempt"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-005",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "LoggedIn --failedAttempt--> LoggedIn"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --login--> LoggedIn",
+        "LoggedIn --failedAttempt--> LoggedIn"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "failedAttempt"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-006",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "LoggedIn --fifthFailedAttempt--> Locked"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --login--> LoggedIn",
+        "LoggedIn --fifthFailedAttempt--> Locked"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "fifthFailedAttempt"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-007",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "Registered --fifthFailedAttempt--> Locked"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --fifthFailedAttempt--> Locked"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "fifthFailedAttempt"
+      ]
+    },
+    {
+      "id": "REQ-006-STT-AT-008",
+      "requirement_id": "REQ-006",
+      "technique": "STT",
+      "inputs": {
+        "transition": "Locked --resetPassword--> Registered"
+      },
+      "preconditions": [],
+      "steps": [
+        "初始状态:Guest",
+        "Guest --register--> Registered",
+        "Registered --fifthFailedAttempt--> Locked",
+        "Locked --resetPassword--> Registered"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "High",
+      "tags": [
+        "STT",
+        "all_transitions",
+        "resetPassword"
+      ]
+    },
+    {
+      "id": "REQ-001-BVA-002",
+      "requirement_id": "REQ-001",
+      "technique": "BVA",
+      "inputs": {
+        "age": 18
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=18"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "age"
+      ]
+    },
+    {
+      "id": "REQ-001-BVA-003",
+      "requirement_id": "REQ-001",
+      "technique": "BVA",
+      "inputs": {
+        "age": 19
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=19"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "age"
+      ]
+    },
+    {
+      "id": "REQ-001-BVA-004",
+      "requirement_id": "REQ-001",
+      "technique": "BVA",
+      "inputs": {
+        "age": 119
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=119"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "age"
+      ]
+    },
+    {
+      "id": "REQ-001-BVA-005",
+      "requirement_id": "REQ-001",
+      "technique": "BVA",
+      "inputs": {
+        "age": 120
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=120"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "age"
+      ]
+    },
+    {
+      "id": "REQ-001-BVA-006",
+      "requirement_id": "REQ-001",
+      "technique": "BVA",
+      "inputs": {
+        "age": 121
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=121"
+      ],
+      "expected_result": "系统应拒绝该输入:age 高于上限(120)。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "age"
+      ]
+    },
+    {
+      "id": "REQ-001-DT-001",
+      "requirement_id": "REQ-001",
+      "technique": "DT",
+      "inputs": {
+        "年龄在 18-120 之间": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'年龄在 18-120 之间': False}"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "DT"
+      ]
+    },
+    {
+      "id": "REQ-001-DT-002",
+      "requirement_id": "REQ-001",
+      "technique": "DT",
+      "inputs": {
+        "年龄在 18-120 之间": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'年龄在 18-120 之间': True}"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "年龄在 18-120 之间"
+      ]
+    },
+    {
+      "id": "REQ-001-EP-001",
+      "requirement_id": "REQ-001",
+      "technique": "EP",
+      "inputs": {
+        "age": 17
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=17"
+      ],
+      "expected_result": "系统应拒绝该输入:age 低于下限(18)。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "age",
+        "below_min"
+      ]
+    },
+    {
+      "id": "REQ-001-EP-002",
+      "requirement_id": "REQ-001",
+      "technique": "EP",
+      "inputs": {
+        "age": 69
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=69"
+      ],
+      "expected_result": "系统应执行:通过注册校验、拒绝注册。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "age",
+        "valid"
+      ]
+    },
+    {
+      "id": "REQ-001-EP-003",
+      "requirement_id": "REQ-001",
+      "technique": "EP",
+      "inputs": {
+        "age": 121
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 age=121"
+      ],
+      "expected_result": "系统应拒绝该输入:age 高于上限(120)。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "age",
+        "above_max"
+      ]
+    },
+    {
+      "id": "REQ-002-BVA-002",
+      "requirement_id": "REQ-002",
+      "technique": "BVA",
+      "inputs": {
+        "password": "xxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "password"
+      ]
+    },
+    {
+      "id": "REQ-002-BVA-003",
+      "requirement_id": "REQ-002",
+      "technique": "BVA",
+      "inputs": {
+        "password": "xxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "password"
+      ]
+    },
+    {
+      "id": "REQ-002-BVA-004",
+      "requirement_id": "REQ-002",
+      "technique": "BVA",
+      "inputs": {
+        "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "password"
+      ]
+    },
+    {
+      "id": "REQ-002-BVA-005",
+      "requirement_id": "REQ-002",
+      "technique": "BVA",
+      "inputs": {
+        "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "password"
+      ]
+    },
+    {
+      "id": "REQ-002-BVA-006",
+      "requirement_id": "REQ-002",
+      "technique": "BVA",
+      "inputs": {
+        "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "password"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-001",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": false,
+        "密码包含数字": false,
+        "密码包含字母": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': False, '密码包含数字': False, '密码包含字母': False}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-002",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": false,
+        "密码包含数字": false,
+        "密码包含字母": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': False, '密码包含数字': False, '密码包含字母': True}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码包含字母"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-003",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": false,
+        "密码包含数字": true,
+        "密码包含字母": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': False, '密码包含数字': True, '密码包含字母': False}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码包含数字"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-004",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": false,
+        "密码包含数字": true,
+        "密码包含字母": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': False, '密码包含数字': True, '密码包含字母': True}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码包含数字",
+        "密码包含字母"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-005",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": true,
+        "密码包含数字": false,
+        "密码包含字母": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': True, '密码包含数字': False, '密码包含字母': False}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码长度 8-32"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-006",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": true,
+        "密码包含数字": false,
+        "密码包含字母": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': True, '密码包含数字': False, '密码包含字母': True}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码长度 8-32",
+        "密码包含字母"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-007",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": true,
+        "密码包含数字": true,
+        "密码包含字母": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': True, '密码包含数字': True, '密码包含字母': False}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码长度 8-32",
+        "密码包含数字"
+      ]
+    },
+    {
+      "id": "REQ-002-DT-008",
+      "requirement_id": "REQ-002",
+      "technique": "DT",
+      "inputs": {
+        "密码长度 8-32": true,
+        "密码包含数字": true,
+        "密码包含字母": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'密码长度 8-32': True, '密码包含数字': True, '密码包含字母': True}"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "密码长度 8-32",
+        "密码包含数字",
+        "密码包含字母"
+      ]
+    },
+    {
+      "id": "REQ-002-EP-001",
+      "requirement_id": "REQ-002",
+      "technique": "EP",
+      "inputs": {
+        "password": ""
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password=''"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "password",
+        "empty"
+      ]
+    },
+    {
+      "id": "REQ-002-EP-002",
+      "requirement_id": "REQ-002",
+      "technique": "EP",
+      "inputs": {
+        "password": "valid_value"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='valid_value'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "password",
+        "normal"
+      ]
+    },
+    {
+      "id": "REQ-002-EP-003",
+      "requirement_id": "REQ-002",
+      "technique": "EP",
+      "inputs": {
+        "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过密码校验、拒绝密码。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "password",
+        "too_long"
+      ]
+    },
+    {
+      "id": "REQ-003-DT-002",
+      "requirement_id": "REQ-003",
+      "technique": "DT",
+      "inputs": {
+        "邮箱包含 @": false,
+        "邮箱包含 .": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'邮箱包含 @': False, '邮箱包含 .': True}"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "邮箱包含 ."
+      ]
+    },
+    {
+      "id": "REQ-003-DT-003",
+      "requirement_id": "REQ-003",
+      "technique": "DT",
+      "inputs": {
+        "邮箱包含 @": true,
+        "邮箱包含 .": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'邮箱包含 @': True, '邮箱包含 .': False}"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "邮箱包含 @"
+      ]
+    },
+    {
+      "id": "REQ-003-DT-004",
+      "requirement_id": "REQ-003",
+      "technique": "DT",
+      "inputs": {
+        "邮箱包含 @": true,
+        "邮箱包含 .": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'邮箱包含 @': True, '邮箱包含 .': True}"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "邮箱包含 @",
+        "邮箱包含 ."
+      ]
+    },
+    {
+      "id": "REQ-003-EP-001",
+      "requirement_id": "REQ-003",
+      "technique": "EP",
+      "inputs": {
+        "email": ""
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 email=''"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "email",
+        "empty"
+      ]
+    },
+    {
+      "id": "REQ-003-EP-002",
+      "requirement_id": "REQ-003",
+      "technique": "EP",
+      "inputs": {
+        "email": "valid_value"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 email='valid_value'"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "email",
+        "normal"
+      ]
+    },
+    {
+      "id": "REQ-003-EP-003",
+      "requirement_id": "REQ-003",
+      "technique": "EP",
+      "inputs": {
+        "email": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 email='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过邮箱校验、拒绝邮箱。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "email",
+        "too_long"
+      ]
+    },
+    {
+      "id": "REQ-004-BVA-002",
+      "requirement_id": "REQ-004",
+      "technique": "BVA",
+      "inputs": {
+        "username": "xxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xxx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "username"
+      ]
+    },
+    {
+      "id": "REQ-004-BVA-003",
+      "requirement_id": "REQ-004",
+      "technique": "BVA",
+      "inputs": {
+        "username": "xxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xxxx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "username"
+      ]
+    },
+    {
+      "id": "REQ-004-BVA-004",
+      "requirement_id": "REQ-004",
+      "technique": "BVA",
+      "inputs": {
+        "username": "xxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "username"
+      ]
+    },
+    {
+      "id": "REQ-004-BVA-005",
+      "requirement_id": "REQ-004",
+      "technique": "BVA",
+      "inputs": {
+        "username": "xxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "username"
+      ]
+    },
+    {
+      "id": "REQ-004-BVA-006",
+      "requirement_id": "REQ-004",
+      "technique": "BVA",
+      "inputs": {
+        "username": "xxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "username"
+      ]
+    },
+    {
+      "id": "REQ-004-DT-001",
+      "requirement_id": "REQ-004",
+      "technique": "DT",
+      "inputs": {
+        "用户名长度 3-20": false,
+        "用户名唯一": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'用户名长度 3-20': False, '用户名唯一': False}"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "DT"
+      ]
+    },
+    {
+      "id": "REQ-004-DT-002",
+      "requirement_id": "REQ-004",
+      "technique": "DT",
+      "inputs": {
+        "用户名长度 3-20": false,
+        "用户名唯一": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'用户名长度 3-20': False, '用户名唯一': True}"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "用户名唯一"
+      ]
+    },
+    {
+      "id": "REQ-004-DT-003",
+      "requirement_id": "REQ-004",
+      "technique": "DT",
+      "inputs": {
+        "用户名长度 3-20": true,
+        "用户名唯一": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'用户名长度 3-20': True, '用户名唯一': False}"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "用户名长度 3-20"
+      ]
+    },
+    {
+      "id": "REQ-004-DT-004",
+      "requirement_id": "REQ-004",
+      "technique": "DT",
+      "inputs": {
+        "用户名长度 3-20": true,
+        "用户名唯一": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'用户名长度 3-20': True, '用户名唯一': True}"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "用户名长度 3-20",
+        "用户名唯一"
+      ]
+    },
+    {
+      "id": "REQ-004-EP-001",
+      "requirement_id": "REQ-004",
+      "technique": "EP",
+      "inputs": {
+        "username": ""
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username=''"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "username",
+        "empty"
+      ]
+    },
+    {
+      "id": "REQ-004-EP-002",
+      "requirement_id": "REQ-004",
+      "technique": "EP",
+      "inputs": {
+        "username": "valid_value"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='valid_value'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "username",
+        "normal"
+      ]
+    },
+    {
+      "id": "REQ-004-EP-003",
+      "requirement_id": "REQ-004",
+      "technique": "EP",
+      "inputs": {
+        "username": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 username='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:通过用户名校验、拒绝用户名。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "username",
+        "too_long"
+      ]
+    },
+    {
+      "id": "REQ-005-BVA-002",
+      "requirement_id": "REQ-005",
+      "technique": "BVA",
+      "inputs": {
+        "failed_attempts": 0
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=0"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "failed_attempts"
+      ]
+    },
+    {
+      "id": "REQ-005-BVA-003",
+      "requirement_id": "REQ-005",
+      "technique": "BVA",
+      "inputs": {
+        "failed_attempts": 1
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=1"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "failed_attempts"
+      ]
+    },
+    {
+      "id": "REQ-005-BVA-004",
+      "requirement_id": "REQ-005",
+      "technique": "BVA",
+      "inputs": {
+        "failed_attempts": 4
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=4"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "failed_attempts"
+      ]
+    },
+    {
+      "id": "REQ-005-BVA-005",
+      "requirement_id": "REQ-005",
+      "technique": "BVA",
+      "inputs": {
+        "failed_attempts": 5
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=5"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "failed_attempts"
+      ]
+    },
+    {
+      "id": "REQ-005-BVA-006",
+      "requirement_id": "REQ-005",
+      "technique": "BVA",
+      "inputs": {
+        "failed_attempts": 6
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=6"
+      ],
+      "expected_result": "系统应拒绝该输入:failed_attempts 高于上限(5)。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "failed_attempts"
+      ]
+    },
+    {
+      "id": "REQ-005-DT-001",
+      "requirement_id": "REQ-005",
+      "technique": "DT",
+      "inputs": {
+        "连续失败次数 >= 5": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'连续失败次数 >= 5': False}"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "DT"
+      ]
+    },
+    {
+      "id": "REQ-005-DT-002",
+      "requirement_id": "REQ-005",
+      "technique": "DT",
+      "inputs": {
+        "连续失败次数 >= 5": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'连续失败次数 >= 5': True}"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "连续失败次数 >= 5"
+      ]
+    },
+    {
+      "id": "REQ-005-EP-001",
+      "requirement_id": "REQ-005",
+      "technique": "EP",
+      "inputs": {
+        "failed_attempts": -1
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=-1"
+      ],
+      "expected_result": "系统应拒绝该输入:failed_attempts 低于下限(0)。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "failed_attempts",
+        "below_min"
+      ]
+    },
+    {
+      "id": "REQ-005-EP-002",
+      "requirement_id": "REQ-005",
+      "technique": "EP",
+      "inputs": {
+        "failed_attempts": 2
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=2"
+      ],
+      "expected_result": "系统应执行:允许登录、锁定账户。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "failed_attempts",
+        "valid"
+      ]
+    },
+    {
+      "id": "REQ-005-EP-003",
+      "requirement_id": "REQ-005",
+      "technique": "EP",
+      "inputs": {
+        "failed_attempts": 6
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 failed_attempts=6"
+      ],
+      "expected_result": "系统应拒绝该输入:failed_attempts 高于上限(5)。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "failed_attempts",
+        "above_max"
+      ]
+    },
+    {
+      "id": "REQ-006-BVA-001",
+      "requirement_id": "REQ-006",
+      "technique": "BVA",
+      "inputs": {
+        "new_password": "xxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "new_password"
+      ]
+    },
+    {
+      "id": "REQ-006-BVA-002",
+      "requirement_id": "REQ-006",
+      "technique": "BVA",
+      "inputs": {
+        "new_password": "xxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "new_password"
+      ]
+    },
+    {
+      "id": "REQ-006-BVA-003",
+      "requirement_id": "REQ-006",
+      "technique": "BVA",
+      "inputs": {
+        "new_password": "xxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "new_password"
+      ]
+    },
+    {
+      "id": "REQ-006-BVA-004",
+      "requirement_id": "REQ-006",
+      "technique": "BVA",
+      "inputs": {
+        "new_password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "new_password"
+      ]
+    },
+    {
+      "id": "REQ-006-BVA-005",
+      "requirement_id": "REQ-006",
+      "technique": "BVA",
+      "inputs": {
+        "new_password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "new_password"
+      ]
+    },
+    {
+      "id": "REQ-006-BVA-006",
+      "requirement_id": "REQ-006",
+      "technique": "BVA",
+      "inputs": {
+        "new_password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "BVA",
+        "new_password"
+      ]
+    },
+    {
+      "id": "REQ-006-DT-001",
+      "requirement_id": "REQ-006",
+      "technique": "DT",
+      "inputs": {
+        "账户状态为 Locked": false,
+        "新密码符合规范": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'账户状态为 Locked': False, '新密码符合规范': False}"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "DT"
+      ]
+    },
+    {
+      "id": "REQ-006-DT-002",
+      "requirement_id": "REQ-006",
+      "technique": "DT",
+      "inputs": {
+        "账户状态为 Locked": false,
+        "新密码符合规范": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'账户状态为 Locked': False, '新密码符合规范': True}"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "新密码符合规范"
+      ]
+    },
+    {
+      "id": "REQ-006-DT-003",
+      "requirement_id": "REQ-006",
+      "technique": "DT",
+      "inputs": {
+        "账户状态为 Locked": true,
+        "新密码符合规范": false
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'账户状态为 Locked': True, '新密码符合规范': False}"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "账户状态为 Locked"
+      ]
+    },
+    {
+      "id": "REQ-006-DT-004",
+      "requirement_id": "REQ-006",
+      "technique": "DT",
+      "inputs": {
+        "账户状态为 Locked": true,
+        "新密码符合规范": true
+      },
+      "preconditions": [],
+      "steps": [
+        "给定条件组合 {'账户状态为 Locked': True, '新密码符合规范': True}"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "DT",
+        "账户状态为 Locked",
+        "新密码符合规范"
+      ]
+    },
+    {
+      "id": "REQ-006-EP-001",
+      "requirement_id": "REQ-006",
+      "technique": "EP",
+      "inputs": {
+        "new_password": ""
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password=''"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "new_password",
+        "empty"
+      ]
+    },
+    {
+      "id": "REQ-006-EP-002",
+      "requirement_id": "REQ-006",
+      "technique": "EP",
+      "inputs": {
+        "new_password": "valid_value"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='valid_value'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "new_password",
+        "normal"
+      ]
+    },
+    {
+      "id": "REQ-006-EP-003",
+      "requirement_id": "REQ-006",
+      "technique": "EP",
+      "inputs": {
+        "new_password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "preconditions": [],
+      "steps": [
+        "提交 new_password='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"
+      ],
+      "expected_result": "系统应执行:重置密码成功、解锁账户。",
+      "priority": "Medium",
+      "tags": [
+        "EP",
+        "new_password",
+        "too_long"
+      ]
+    }
+  ],
+  "coverage": {
+    "requirement_coverage": 1.0
+  }
+}
