@@ -1,0 +1,7 @@
+id,raw_text,category
+REQ-001,"用户注册时,年龄必须在 18 至 120 岁之间。 (BR-01: Age must be between 18 and 120.)",functional
+REQ-002,"密码长度需在 8 至 32 个字符之间,且至少包含 1 位数字与 1 位字母。 (BR-02: Password length 8-32 characters, must contain at least 1 digit and 1 letter.)",functional
+REQ-003,"用户邮箱必须包含 @ 符号和点号。 (BR-03: Email must contain @ and .)",functional
+REQ-004,"用户名必须唯一,且长度在 3 至 20 个字符之间。 (BR-04: Username must be unique, length 3-20 characters.)",functional
+REQ-005,"用户连续 5 次登录失败后,系统应锁定该账户,禁止登录。 (BR-05: After 5 consecutive failed login attempts, the account is locked.)",functional
+REQ-006,"锁定账户只能通过密码重置功能解锁。 (BR-06: Locked accounts can only be unlocked via password reset.)",functional
