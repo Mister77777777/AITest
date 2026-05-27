@@ -1,188 +1,151 @@
-# Risk Analysis Report / 风险分析报告
+# 风险分析报告
 
-**Application Under Test / 被测应用:** AutoTestDesign — AI-driven Test Case Generator
-**Date / 日期:** 2026-05-01
-**Version / 版本:** 0.1.0
-
----
-
-## 1. Overview / 概述
-
-This report identifies and assesses risks for the AutoTestDesign tool — a Python + Streamlit application that uses a Large Language Model (OpenAI-compatible interface) together with deterministic algorithms to generate test cases from software requirements. The tool integrates black-box techniques (Equivalence Partitioning, Boundary Value Analysis, Decision Tables) and a white-box state-transition technique per ISO/IEC/IEEE 29119-4, plus risk scoring, oracle synthesis, and test-suite optimization.
-
-本报告针对 AutoTestDesign 工具自身的风险进行识别与评估。该工具基于 Python + Streamlit,结合大语言模型(OpenAI 兼容接口)与确定性算法,把软件需求转化为测试用例,覆盖 ISO/IEC/IEEE 29119-4 的等价类划分(EP)、边界值分析(BVA)、判定表(DT)三种黑盒技术以及状态转换(STT)白盒技术,辅以风险评分、Oracle 合成、测试套件优化等能力。
+**被测应用:** AuthSystem — 用户注册与登录系统
+**日期:** 2026-05-27
+**版本:** 0.1.0
+**工具链:** AutoTestDesign (AI 驱动测试用例生成)
 
 ---
 
-## 2. Risk Assessment Methodology / 风险评估方法
+## 1. 概述
 
-Each risk is scored along two dimensions:
+本报告针对 AuthSystem 目标应用进行风险识别与评估。AuthSystem 是一个纯 Python 内存实现的用户注册登录系统，提供用户注册、登录、登出、密码重置功能，并实现了 5 次连续登录失败锁定的安全策略。
 
-- **Likelihood (1-5)** — probability the risk will materialize during normal use or demo.
-- **Impact (1-5)** — consequence on correctness, usability, or graded deliverable if the risk materializes.
-
-Priority:
-- **High:** score ≥ 15
-- **Medium:** 8 ≤ score < 15
-- **Low:** score < 8
-
-本工具内部的 FR2 风险打分算法使用完全一致的维度与阈值,与本报告方法对齐。
-
-每项风险从两个维度打分:**可能性(1-5)** 与 **影响(1-5)**;总分 = 可能性 × 影响。阈值:≥15 高、8~14 中、<8 低。
+AuthSystem 作为 Assignment 2 的被测对象，通过 AutoTestDesign 工具生成测试用例并执行 pytest 验证。本报告识别了 14 项风险，覆盖安全性、功能性、数据完整性、可用性四个维度。
 
 ---
 
-## 3. Risk Register / 风险登记表
+## 2. 风险评估方法
 
-| ID | Risk / 风险 | Likelihood | Impact | Score | Priority |
-|----|-------------|------------|--------|-------|----------|
-| R-01 | LLM returns non-JSON or malformed schema / LLM 返回非 JSON 或结构不符 | 4 | 4 | 16 | High |
-| R-02 | Network outage / rate-limit / LLM provider 不可用或被限流 | 3 | 4 | 12 | Medium |
-| R-03 | Provider-specific parameter incompatibility (e.g. temperature unsupported) / 不同 provider 参数兼容性差异 | 4 | 3 | 12 | Medium |
-| R-04 | API key leakage / API Key 泄漏 | 2 | 5 | 10 | Medium |
-| R-05 | Incorrect test case generation (missing boundary / wrong partitions) / 测试用例生成错误(漏边界、分区错误) | 3 | 5 | 15 | High |
-| R-06 | State machine DSL parse errors on user input / 用户提供的状态机 DSL 解析失败 | 4 | 3 | 12 | Medium |
-| R-07 | LLM hallucinates inconsistent score (score ≠ likelihood × impact) / LLM 生成风险分自相矛盾 | 3 | 3 | 9 | Medium |
-| R-08 | Excessive token cost from batched LLM calls / 批量 LLM 调用 token 成本过高 | 3 | 2 | 6 | Low |
-| R-09 | Streamlit session state loss after long idle / Streamlit 会话长时间空闲丢失状态 | 2 | 2 | 4 | Low |
-| R-10 | CSV/Excel injection via uploaded requirement files / 上传需求文件时的 CSV/Excel 注入 | 2 | 4 | 8 | Medium |
-| R-11 | Unicode / encoding issues on Windows when reading uploaded files / Windows 上中文编码问题 | 3 | 2 | 6 | Low |
-| R-12 | Incomplete coverage when requirement has no `input_fields` or `conditions` / 需求缺少结构化字段导致覆盖不完整 | 4 | 3 | 12 | Medium |
-| R-13 | Exported JSON not importable by target TMS / 导出 JSON 字段映射与目标 TMS 不匹配 | 3 | 2 | 6 | Low |
-| R-14 | Graphviz system binary missing at runtime / 系统未安装 graphviz 导致状态图渲染失败 | 3 | 2 | 6 | Low |
+每项风险从两个维度打分：
 
-Total: 14 risks — **2 High, 6 Medium, 6 Low / 共 14 项:2 高、6 中、6 低**。
+- **可能性 (Likelihood, 1-5):** 风险在正常使用或演示中发生的概率。
+- **影响 (Impact, 1-5):** 风险发生对系统正确性、安全性或项目交付的后果严重性。
+
+优先级阈值：
+
+| 优先级 | 分数范围 |
+|--------|---------|
+| **高 (High)** | ≥ 15 |
+| **中 (Medium)** | 8 – 14 |
+| **低 (Low)** | < 8 |
 
 ---
 
-## 4. Detailed Analysis of High-Priority Risks / 高优先级风险详细分析
+## 3. 风险登记表
 
-### R-01 — LLM returns non-JSON or malformed schema / LLM 返回非 JSON 或结构不符
+| ID | 风险 | 可能性 | 影响 | 总分 | 优先级 |
+|----|------|--------|------|------|--------|
+| R-01 | 暴力破解攻击：攻击者通过自动化工具反复尝试密码 | 4 | 5 | 20 | High |
+| R-02 | 用户名枚举：错误消息差异泄露用户是否存在 | 5 | 3 | 15 | High |
+| R-03 | 账户锁定拒绝服务：攻击者故意锁定大量合法账户 | 3 | 4 | 12 | Medium |
+| R-04 | 内存数据丢失：服务器重启导致所有用户数据丢失 | 2 | 5 | 10 | Medium |
+| R-05 | 弱密码策略绕过：密码规则仅要求 1 位数字+1 位字母 | 4 | 4 | 16 | High |
+| R-06 | 邮箱校验不充分：仅检查 @ 和 . 不验证真实有效性 | 4 | 3 | 12 | Medium |
+| R-07 | 密码重置安全缺陷：重置不要求旧密码即可改密 | 3 | 4 | 12 | Medium |
+| R-08 | 并发/竞态条件：多线程同时操作同一用户状态不一致 | 2 | 4 | 8 | Medium |
+| R-09 | 密码明文内存存储：密码以明文形式存在 dict 中 | 4 | 5 | 20 | High |
+| R-10 | 输入注入攻击：用户名/邮箱含特殊字符导致异常 | 3 | 3 | 9 | Medium |
+| R-11 | 登录失败计数器复位漏洞：4 次失败后成功登录复位计数器 | 2 | 3 | 6 | Low |
+| R-12 | 退出登录缺失校验：任意状态调用 logout 不检查当前状态 | 2 | 2 | 4 | Low |
+| R-13 | 注册时缺少人机验证：无 CAPTCHA 等机器人防护 | 5 | 2 | 10 | Medium |
+| R-14 | 年龄上限过高(120)：允许不合理的极端年龄值 | 1 | 2 | 2 | Low |
 
-**Description:** The LLM may occasionally emit free-text prose, markdown code fences (```json ... ```), or JSON that does not conform to the pydantic schema expected by the caller (e.g. wrong field names, missing required fields).
-
-描述:LLM 可能返回自由文本、带 markdown 围栏的 JSON,或字段名错、缺必填字段的 JSON。
-
-**Business impact:** Pipeline stage failures cause cases to fall back to algorithmic defaults, lowering the perceived "AI-ness" of the output and in extreme cases producing generic expected-results across many cases.
-
-业务影响:流水线阶段失败会回退到算法默认值,在极端情况下大量用例 expected_result 变成泛化文本,影响"AI 驱动"的体感与最终演示说服力。
-
-**Mitigation:**
-1. `LLMClient.structured_call()` enforces `response_format={"type": "json_object"}` when the provider supports it.
-2. Pydantic `model_validate_json()` validates the returned payload against the target schema — mismatch triggers retry (up to `max_retries=3`).
-3. `_strip_json_fence()` removes ``` ```json``` wrappers before parsing.
-4. On final failure, all callers (risk, oracle) fall back to rule-based defaults so the pipeline never crashes.
-
-缓解:客户端层面启用 JSON 模式 + pydantic 校验 + 3 次重试 + 代码围栏剥离;所有调用方(风险、Oracle)都有算法兜底,不会让流水线崩溃。
-
-**Residual risk:** Low — even if LLM is entirely unavailable, the tool produces complete test suites on rule-based defaults.
-
-剩余风险:低。即便 LLM 完全不可用,工具仍能用规则生成完整测试套件。
-
-### R-05 — Incorrect test case generation / 测试用例生成错误
-
-**Description:** Algorithm bugs in EP/BVA/DT generators could produce wrong boundaries (e.g., off-by-one on `min`/`max`), miss equivalence classes, or duplicate decision-table rows.
-
-描述:EP/BVA/DT 生成器的算法 bug 可能导致边界值偏移(±1 错位)、漏等价类、判定表行重复。
-
-**Business impact:** Consumers of the generated test suite miss real defects, defeating the tool's core value proposition.
-
-业务影响:生成的测试套件无法发现真实缺陷,工具核心价值被严重削弱。
-
-**Mitigation:**
-1. Every generator has dedicated pytest unit tests with hand-computed expected outputs:
-   - `test_boundary.py`: asserts `[-1, 0, 1, 99, 100, 101]` for range `[0, 100]`.
-   - `test_decision_table.py`: asserts 2^N rows for N conditions.
-   - `test_equivalence.py`: asserts distinct partitions per field type.
-2. `core/` coverage target ≥ 80% (current: 95%) ensures branches are exercised.
-3. `core/` is decoupled from UI and LLM, so regressions are caught by pytest alone without needing integration.
-
-缓解:每个生成器都有单元测试,人工推算的期望值做断言;`core/` 覆盖率 95%(目标 80%);`core/` 与 UI/LLM 解耦,纯 pytest 就能回归。
-
-**Residual risk:** Low — algorithms are simple, mathematically well-defined, and unit-tested. Remaining risk is a rare pydantic/type-handling edge case.
-
-剩余风险:低。算法简单且数学定义清晰,已被单元测试覆盖。
+共 14 项风险 — **3 高、8 中、3 低**。
 
 ---
 
-## 5. Medium-Priority Risks / 中优先级风险摘要
+## 4. 高优先级风险详细分析
 
-- **R-02 Network outage:** 3× retry with increasing tolerance; offline fallback to rule-based paths. Users see a warning in the Streamlit sidebar.
-  网络中断:客户端 3 次重试 + 算法兜底;UI 侧边栏提示降级状态。
+### R-01 — 暴力破解攻击
 
-- **R-03 Provider parameter incompatibility:** Adaptive `_send_temperature` / `_send_response_format` flags in `LLMClient`. First 400 error mentioning the parameter disables it silently for subsequent calls.
-  Provider 参数兼容性差异:客户端自适应关掉不支持的参数,首次遇到 400 后对后续调用生效。
+**描述:** AuthSystem 缺少登录速率限制机制。攻击者可编写脚本对同一用户名发起无限次密码猜测。虽然 5 次失败会触发锁定，但攻击者可每 4 次失败后等待目标登录成功再继续尝试，或针对不同用户名进行密码喷洒攻击（password spraying）。
 
-- **R-04 API key leakage:** `.env/config.json` is listed in `.gitignore`. UI caption only shows first characters. Error messages never embed the key.
-  API Key 泄漏:`.env/` 已在 gitignore 中;UI 不显示 key 原文;错误日志不会打印 key。
+**业务影响:** 用户账户被非法访问，敏感数据泄露，系统信任度严重受损。
 
-- **R-06 DSL parse errors:** Regex `^\s*(\w+)\s*--\s*([^-\s][^-]*?)\s*-->\s*(\w+)\s*$` validates each line; invalid lines are silently skipped; zero transitions raises `ValueError` with a user-friendly message surfaced as a Streamlit warning.
-  DSL 解析失败:正则校验单行格式,无效行跳过,零转换时抛 ValueError 并在 UI 以警告提示。
+**缓解措施:**
+1. 增加登录速率限制：同一 IP 每分钟最多 10 次登录尝试。
+2. 引入登录冷却期：首次失败后逐次延长等待时间（exponential backoff）。
+3. 增加 CAPTCHA 验证：登录页面集成人机验证。
 
-- **R-07 Inconsistent LLM scoring:** Handled structurally — `RiskScore` pydantic model has `_score_matches_product` validator that rejects any payload where `score != likelihood × impact`. Combined with rule-based scoring (algorithm computes score, LLM only writes rationale), this class of bug cannot reach the user.
-  LLM 自相矛盾打分:`RiskScore` 模型层校验 `score = likelihood × impact`,且打分本身由算法执行、LLM 只生成 rationale,该类 bug 不会到达用户。
+**剩余风险:** 中。即便有限速措施，分布式攻击仍可绕过 IP 限制。
 
-- **R-10 CSV/Excel injection:** Uploads are parsed via `pandas.read_csv` (no `eval`); values never flow into shell or SQL. Excel export uses `openpyxl` which escapes formulas when the first cell char is `=`/`+`/`-`/`@` by default.
-  上传文件注入:用 pandas.read_csv 解析,不走 eval;导出 Excel 走 openpyxl,默认会处理以 `=` 开头的单元格。
+### R-05 — 弱密码策略绕过
 
-- **R-12 Incomplete coverage on unstructured requirements:** Pipeline now calls `parse_with_llm` via the `auto_structure` flag (default `True`) to fill empty `input_fields`/`conditions` before running black-box generators. Verified on `banking_registration.csv`: 6 requirements → 65 test cases after auto-structuring.
-  结构不完整导致覆盖不足:流水线新增 `auto_structure` 开关(默认开),自动用 LLM 补齐空字段。内置示例实测 6 条需求 → 65 条用例。
+**描述:** BR-02 仅要求密码含 1 位数字和 1 位字母，长度为 8-32 字符。密码如 `password1`、`12345678a` 均可通过校验。攻击者可使用常见弱密码字典快速攻破账户。
 
----
+**业务影响:** 账户安全性大幅降低，弱密码用户成为攻击突破口。
 
-## 6. Low-Priority Risks / 低优先级风险摘要
+**缓解措施:**
+1. 引入密码强度评分：拒绝 Top 1000 常见密码。
+2. 要求至少包含大小写字母和特殊字符。
+3. 集成密码泄露检测 API（如 Have I Been Pwned）。
 
-- **R-08 Token cost:** `temperature=0.2` keeps outputs short; prompts are concise; results cached in `session_state` so re-opening tabs doesn't re-charge.
-  Token 成本:低温短响应 + session_state 缓存,切换 Tab 不重复扣费。
+**剩余风险:** 中。密码策略强化无法完全防止用户使用易记弱密码。
 
-- **R-09 Session-state loss:** Acceptable — users can re-run the pipeline; no persistent data at risk.
-  会话状态丢失:可接受,用户重新运行即可,无持久化数据损失。
+### R-09 — 密码明文内存存储
 
-- **R-11 Encoding issues:** `pd.read_csv` default is utf-8; `to_json` uses `ensure_ascii=False` so Chinese content roundtrips. Windows-specific edge case not observed in testing.
-  编码问题:pandas 默认 utf-8;JSON 导出保留原字符,未观察到 Windows 具体问题。
+**描述:** AuthSystem 使用 Python dict 存储用户数据，密码以明文形式保存在 `_User.password` 字段中。任何能访问内存 dump 或进程调试的工具都能获取所有用户密码。
 
-- **R-13 TMS field mismatch:** Column names aligned with Jira Xray / TestRail conventions (`id`, `requirement_id`, `technique`, `priority`, `steps`, `expected_result`). Users can post-process CSV if a specific TMS needs re-mapping.
-  TMS 字段不匹配:列名已对齐 Jira Xray / TestRail 常见惯例,用户可做 CSV 后处理。
+**业务影响:** 密码泄露导致所有用户账户面临风险；若用户在其他服务复用密码，攻击面进一步扩大。
 
-- **R-14 Missing graphviz binary:** Error surfaces as a Streamlit warning on the state-diagram tab; test generation still works without the diagram render.
-  缺 graphviz 二进制:状态图渲染失败,但测试用例生成不受影响。
+**缓解措施:**
+1. 使用 bcrypt 或 argon2 对密码进行哈希加盐存储。
+2. 验证密码时比对哈希值而非明文。
+3. 密码重置时直接写入新哈希。
 
----
-
-## 7. Residual Risk Posture / 剩余风险态势
-
-After mitigations, the residual risk profile is:
-
-| Priority | Before mitigation | After mitigation |
-|----------|-------------------|------------------|
-| High     | 2                 | 0                |
-| Medium   | 6                 | 2 (R-04, R-10)   |
-| Low      | 6                 | 12               |
-
-The two Medium residual risks (**API key leakage**, **injection via upload**) are fundamental properties of any tool that handles secrets and accepts user uploads. They are managed by operational practice (gitignore, user education) rather than eliminated in code.
-
-实施缓解后,高风险全部降级;中风险仅 R-04 / R-10 仍属中位 — 这两项是此类工具固有特性,靠运维约定(gitignore、用户教育)而不是代码消除。
+**剩余风险:** 低。经过哈希处理后，即使数据泄露也无法恢复明文密码。
 
 ---
 
-## 8. Recommendations / 建议
+## 5. 中优先级风险摘要
 
-1. **Production hardening:** add a sandbox / firewall policy that prevents the Streamlit process from reading any file outside `.env/config.json` and `autotestdesign/`.
-   生产加固:增加沙箱/防火墙策略,限制进程只能读 `.env/config.json` 与项目目录。
-
-2. **LLM observability:** log token usage per call and surface on the sidebar; alert users when running expensive requirements.
-   LLM 可观测性:记录每次调用的 token,在侧边栏显示,对大需求发预警。
-
-3. **Template library:** pre-ship several example state-machine DSLs (shopping-cart checkout, authentication, order lifecycle) to reduce user friction on FR4.
-   模板库:预置多个状态机 DSL 模板,降低 FR4 使用门槛。
-
-4. **Test management integration:** provide a direct Jira Xray exporter (beyond generic CSV) for users who use that TMS.
-   TMS 对接:为 Jira Xray 用户提供一键直推功能。
+- **R-02 用户名枚举:** `UserNotFoundError` 与 `InvalidCredentialsError` 错误消息不同，攻击者可区分"用户不存在"与"密码错误"。缓解：统一返回"用户名或密码错误"。
+- **R-03 账户锁定拒绝服务:** 任何人知道用户名即可故意输错 5 次密码锁定账户。缓解：引入 IP 维度的失败计数限制 + 锁定自动过期（如 15 分钟后自动解锁）。
+- **R-04 内存数据丢失:** dict 存储无持久化，进程重启数据即消失。缓解：引入 SQLite 或 JSON 文件持久化。
+- **R-06 邮箱校验不充分:** 仅检查 `@` 和 `.` 存在，`a@b` 也可通过。缓解：增加正则匹配标准邮箱格式（RFC 5322）。
+- **R-07 密码重置安全缺陷:** 当前重置不要求验证旧密码，也不要求邮箱验证。缓解：发送重置链接到注册邮箱，或要求输入旧密码。
+- **R-08 竞态条件:** `login()` 中读写 `failed_attempts` 和 `state` 非原子操作。缓解：加 `threading.Lock` 保护关键区域。
+- **R-10 输入注入攻击:** 用户名、邮箱无特殊字符过滤，虽无 SQL 层但在日志输出或序列化时可能引发问题。缓解：对输入做白名单字符校验。
+- **R-13 缺少人机验证:** 注册接口无 CAPTCHA，可被自动化脚本批量注册。缓解：集成 reCAPTCHA 等验证服务。
 
 ---
 
-## 9. Conclusion / 结论
+## 6. 低优先级风险摘要
 
-All High-priority risks have effective technical mitigations in place (retry + validation + fallback for LLM errors; unit-tested algorithms for generation correctness). Medium risks are either mitigated by design (adaptive provider handling, pipeline auto-structuring) or accepted as operational concerns (secret management, upload hygiene). The tool is suitable for the Assignment 2 demo and for extended pilot use within the scope documented in the Test Plan.
+- **R-11 计数器复位逻辑:** 成功登录后 reset 计数器是合理设计，但攻击者可在 4 次失败后等待用户自己登录以重置。风险低因需社会工程配合。
+- **R-12 退出登录状态校验缺失:** logout 不强制要求当前状态为 LoggedIn。风险低因不影响安全性，只是返回逻辑有冗余。
+- **R-14 年龄上限 120:** 边界值 120 稍高但属于 ISTQB 等价类划分的合法值。风险极低，不产生实际安全问题。
 
-高优先级风险全部有技术侧有效缓解(LLM 错误的重试+校验+兜底;生成算法的单元测试);中风险或已通过设计缓解(provider 自适应、流水线自动结构化),或作为运维问题被接受(密钥管理、上传卫生)。工具适合 Assignment 2 演示与小范围试点。
+---
+
+## 7. 剩余风险态势
+
+实施缓解后，风险等级变化如下：
+
+| 优先级 | 缓解前 | 缓解后 |
+|--------|--------|--------|
+| 高     | 3      | 0      |
+| 中     | 8      | 4      |
+| 低     | 3      | 10     |
+
+主要的剩余中风险（R-01 分布式暴力破解、R-03 拒绝服务、R-06 邮箱校验、R-13 无 CAPTCHA）是此类系统的固有属性，需要通过运维层面（WAF、速率限制网关）和后续版本迭代解决，而非在当前纯 Python 原型中完全消除。
+
+---
+
+## 8. 建议
+
+1. **密码哈希存储（高优先级）:** 将明文密码替换为 bcrypt/argon2 哈希是最高性价比的安全改进。
+2. **统一错误消息:** 将登录失败统一为"用户名或密码错误"，防止用户名枚举。
+3. **登录速率限制:** 引入 IP 维度 + 用户名维度的双重速率限制。
+4. **持久化存储:** 从内存 dict 迁移到 SQLite，解决数据丢失问题。
+5. **自动化测试增长:** 利用 AutoTestDesign 生成的安全测试用例持续覆盖新增校验规则。
+6. **密码复杂度提升:** 拒绝常见弱密码，增加特殊字符要求。
+
+---
+
+## 9. 结论
+
+AuthSystem 作为教学用途的原型系统，在核心功能正确性上表现良好（49 个 pytest 测试全部通过），但在安全防护层面存在明显短板。3 项高优先级风险中有 2 项（弱密码策略、密码明文存储）可通过代码级改进快速解决；暴力破解防护需要引入外部依赖或架构调整。
+
+通过 AutoTestDesign 工具生成的 82 条测试用例已覆盖 EP/BVA/DT/STT 四种技术，为 AuthSystem 的测试完整性提供了基线保障。建议将本报告的缓解措施纳入后续迭代计划。
