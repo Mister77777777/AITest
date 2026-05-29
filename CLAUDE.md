@@ -57,7 +57,8 @@ AITest/
 
 1. 每个阶段完成后运行测试验证
 2. 测试通过后立即 git commit
-3. 遵循 `task/tasks.md` 中的任务顺序
+3. commit 后执行 `git push`，超时时间 15 秒
+4. 遵循 `task/tasks.md` 中的任务顺序
 4. 不修改 `core/` 算法层（FR1-FR7 已全部完成）
 
 ## 关键约定
